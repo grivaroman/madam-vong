@@ -4,12 +4,13 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Тайны мадам Вонг</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Literata:opsz,wght@7..72,400;7..72,600&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
 <style>
 /* Раскладка: киноафиша 1986 года. Тёмный зал, плакатный жёлтый заголовок,
    красные плашки, кадры на плёнке. Одна тёмная тема — осознанно. */
+@font-face { font-family: "Rostov"; src: url("fonts/rostov.ttf") format("truetype"); font-display: swap; }
+@font-face { font-family: "Zeger"; src: url("fonts/zeger.ttf") format("truetype"); font-display: swap; }
+@font-face { font-family: "Erzieherisch"; src: url("fonts/erzieherisch.ttf") format("truetype"); font-display: swap; }
+
 :root {
   --ink: #0c1726;        /* ночное море, фон */
   --panel: #13223a;      /* карточки и полосы */
@@ -18,9 +19,10 @@
   --muted: #a3b2c6;      /* второстепенный текст */
   --gold: #f2c230;       /* жёлтый с афиши */
   --red: #d9432c;        /* красный с афиши */
-  --display: "Oswald", "Arial Narrow", "Segoe UI", sans-serif;
-  --body: "Literata", "Iowan Old Style", "Times New Roman", serif;
-  --mono: "IBM Plex Mono", ui-monospace, "Cascadia Mono", Consolas, monospace;
+  --title: "Rostov", "Arial Black", "Segoe UI", sans-serif;     /* название и заголовки разделов */
+  --display: "Zeger", "Century Gothic", "Segoe UI", sans-serif;  /* подзаголовки, имена, меню */
+  --body: "Erzieherisch", "Segoe UI", system-ui, sans-serif;     /* основной текст */
+  --mono: var(--display);                                       /* мелкие подписи */
   --gutter: clamp(16px, 4vw, 48px);
   --wrap: 1140px;
   color-scheme: dark;
@@ -32,8 +34,9 @@ body {
   margin: 0;
   background: var(--ink);
   color: var(--paper);
-  font: 400 17px/1.65 var(--body);
+  font: 400 19px/1.7 var(--body);
   -webkit-font-smoothing: antialiased;
+  font-synthesis: none; /* у шрифтов одно начертание, без поддельного жирного */
 }
 img { max-width: 100%; display: block; }
 a { color: var(--gold); }
@@ -43,7 +46,7 @@ p { margin: 0; }
 
 .wrap { max-width: var(--wrap); margin-inline: auto; padding-inline: var(--gutter); }
 .eyebrow {
-  font: 500 12px/1.4 var(--mono);
+  font: 500 13px/1.4 var(--mono);
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--gold);
@@ -105,6 +108,7 @@ p { margin: 0; }
 @keyframes drift { from { transform: scale(1.04); } to { transform: scale(1.12) translateX(-2%); } }
 .hero__inner { display: grid; gap: 24px; max-width: 720px; }
 .hero__title {
+  font-family: var(--title);
   font-size: clamp(56px, 11vw, 132px);
   font-weight: 700;
   text-transform: uppercase;
@@ -114,28 +118,12 @@ p { margin: 0; }
   text-shadow: 0.045em 0.035em 0 var(--red);
 }
 .hero__lead { font-size: clamp(18px, 2.1vw, 21px); max-width: 34em; color: var(--paper); }
-.facts { display: flex; flex-wrap: wrap; gap: 10px 28px; padding: 0; margin: 8px 0 0; list-style: none; }
-.facts li { display: grid; gap: 2px; }
-.facts b { font: 600 26px/1 var(--display); color: var(--paper); font-variant-numeric: tabular-nums; }
-.facts span { font: 400 12px/1.3 var(--mono); color: var(--muted); letter-spacing: 0.04em; }
-.actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 8px; }
-.btn {
-  display: inline-flex; align-items: center; gap: 10px;
-  font: 600 15px/1 var(--display);
-  letter-spacing: 0.08em; text-transform: uppercase;
-  padding: 15px 22px;
-  border: 2px solid var(--gold);
-  color: var(--ink); background: var(--gold);
-  text-decoration: none; cursor: pointer;
-  transition: transform .15s, background .15s;
-}
-.btn:hover { transform: translateY(-2px); }
-.btn--ghost { background: transparent; color: var(--gold); }
 
 /* ——— Секции ——— */
 .section { padding-block: clamp(64px, 9vw, 112px); border-top: 1px solid var(--line); }
 .section__head { display: grid; gap: 12px; margin-bottom: clamp(32px, 5vw, 56px); max-width: 760px; }
 .section__title {
+  font-family: var(--title);
   font-size: clamp(36px, 6vw, 64px);
   font-weight: 600;
   text-transform: uppercase;
@@ -157,7 +145,7 @@ p { margin: 0; }
 .credits { display: grid; gap: 0; margin: 0; }
 .credits div { display: grid; grid-template-columns: 9em 1fr; gap: 12px; padding-block: 9px; border-bottom: 1px solid var(--line); }
 .credits dt { font: 400 12px/1.6 var(--mono); color: var(--muted); letter-spacing: 0.04em; text-transform: uppercase; }
-.credits dd { margin: 0; font-size: 15px; font-variant-numeric: tabular-nums; }
+.credits dd { margin: 0; font-size: 17px; font-variant-numeric: tabular-nums; }
 
 /* ——— 3. Кадры: плёнка ——— */
 .strip {
@@ -208,18 +196,18 @@ p { margin: 0; }
 .actor__photo img { width: 100%; height: 100%; object-fit: cover; object-position: center 20%; filter: grayscale(.25) contrast(1.05); transition: filter .3s; }
 .actor:hover .actor__photo img { filter: none; }
 .actor__name { font: 500 clamp(17px, 2.2vw, 24px)/1.1 var(--display); text-transform: uppercase; letter-spacing: .02em; }
-.actor__role { font-size: 15px; line-height: 1.45; color: var(--muted); }
+.actor__role { font-size: 16px; line-height: 1.45; color: var(--muted); }
 .actor__role b { color: var(--gold); font-weight: 600; }
 .also { margin-top: 48px; padding-top: 24px; border-top: 1px solid var(--line); display: grid; gap: 14px; }
 .also ul { columns: 2 280px; column-gap: 40px; padding: 0; margin: 0; list-style: none; }
-.also li { break-inside: avoid; padding-block: 6px; font-size: 15px; color: var(--muted); }
+.also li { break-inside: avoid; padding-block: 6px; font-size: 17px; color: var(--muted); }
 .also li b { color: var(--paper); font-weight: 500; }
 
 /* ——— 5. Режиссёр ——— */
 .director { display: grid; grid-template-columns: minmax(0, 340px) minmax(0, 1fr); gap: clamp(28px, 5vw, 72px); align-items: start; }
 .director__photo img { width: 100%; aspect-ratio: 4 / 5; object-fit: cover; box-shadow: -14px 14px 0 var(--gold); }
 .director__body { display: grid; gap: 20px; max-width: 62ch; }
-.director__name { font-size: clamp(40px, 6vw, 72px); font-weight: 700; text-transform: uppercase; }
+.director__name { font-family: var(--title); font-size: clamp(40px, 6vw, 72px); font-weight: 700; text-transform: uppercase; }
 .director__years { font: 400 14px/1.4 var(--mono); color: var(--muted); letter-spacing: .04em; }
 .films { list-style: none; padding: 0; margin: 0; display: grid; }
 .films li { display: grid; grid-template-columns: 4.5em 1fr; gap: 12px; padding-block: 8px; border-bottom: 1px solid var(--line); font-size: 16px; }
@@ -244,9 +232,9 @@ p { margin: 0; }
   font: 700 clamp(30px, 4vw, 46px)/1 var(--display); color: var(--gold); text-transform: uppercase; letter-spacing: .04em;
 }
 .place__body { padding: 20px 22px 24px; display: grid; gap: 10px; align-content: start; }
-.place__where { font: 500 12px/1.4 var(--mono); color: var(--gold); letter-spacing: .1em; text-transform: uppercase; }
+.place__where { font: 500 13px/1.4 var(--mono); color: var(--gold); letter-spacing: .1em; text-transform: uppercase; }
 .place h3 { font-size: 26px; font-weight: 500; text-transform: uppercase; }
-.place p { font-size: 15px; color: var(--muted); }
+.place p { font-size: 17px; color: var(--muted); }
 .note { margin-top: 28px; font-size: 16px; color: var(--muted); max-width: 62ch; padding-left: 18px; border-left: 3px solid var(--red); }
 
 /* ——— 7. Трейлер ——— */
@@ -267,35 +255,6 @@ p { margin: 0; }
 .video__play i::after { content: ""; border-left: 26px solid var(--paper); border-block: 16px solid transparent; margin-left: 7px; }
 .video__play b { font: 600 clamp(20px, 3vw, 32px)/1.1 var(--display); text-transform: uppercase; letter-spacing: .04em; text-shadow: 0 2px 12px #000; }
 .video__play small { font: 400 13px/1.4 var(--mono); color: var(--paper); text-shadow: 0 1px 8px #000; }
-.video-meta { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px 24px; margin-top: 14px; font: 400 13px/1.5 var(--mono); color: var(--muted); }
-
-/* ——— 8. Отзывы ——— */
-.reviews { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 2fr); gap: clamp(28px, 5vw, 64px); align-items: start; }
-.score { display: grid; gap: 18px; position: sticky; top: 88px; }
-.score__num { font: 700 clamp(84px, 12vw, 132px)/0.85 var(--display); color: var(--gold); font-variant-numeric: tabular-nums; }
-.score__num small { font-size: .32em; color: var(--muted); font-weight: 400; }
-.score p:not(.score__num) { color: var(--muted); font-size: 15px; }
-.quotes { display: grid; gap: 16px; }
-.quote { margin: 0; padding: 22px 24px; background: var(--panel); display: grid; gap: 12px; }
-.quote--critic { background: transparent; border: 1px solid var(--gold); }
-.quote blockquote { margin: 0; font-size: 17px; line-height: 1.6; }
-.quote figcaption { display: flex; flex-wrap: wrap; gap: 4px 14px; font: 400 12px/1.5 var(--mono); color: var(--muted); letter-spacing: .03em; }
-.quote figcaption b { color: var(--paper); font-weight: 500; }
-.tag { font: 500 11px/1 var(--mono); letter-spacing: .1em; text-transform: uppercase; padding: 4px 7px; align-self: center; }
-.tag--plus { background: color-mix(in srgb, var(--gold) 20%, transparent); color: var(--gold); }
-.tag--minus { background: color-mix(in srgb, var(--red) 25%, transparent); color: #ff9a86; }
-.tag--mid { background: var(--line); color: var(--paper); }
-.form { display: grid; gap: 14px; margin-top: 24px; padding: 24px; border: 1px dashed var(--line); }
-.form h3 { font-size: 24px; font-weight: 500; text-transform: uppercase; }
-.form label { display: grid; gap: 6px; font: 400 12px/1.4 var(--mono); color: var(--muted); letter-spacing: .06em; text-transform: uppercase; }
-.form input, .form textarea, .form select {
-  font: 400 16px/1.5 var(--body); color: var(--paper);
-  background: var(--ink); border: 1px solid var(--line); padding: 12px 14px; width: 100%;
-}
-.form input:focus, .form textarea:focus, .form select:focus { outline: none; border-color: var(--gold); }
-.form textarea { min-height: 110px; resize: vertical; }
-.form__row { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); gap: 14px; }
-.form__status { font: 400 13px/1.4 var(--mono); color: var(--gold); min-height: 1.4em; }
 
 /* ——— Подвал ——— */
 .footer { border-top: 1px solid var(--line); padding-block: 40px 56px; color: var(--muted); font-size: 14px; }
@@ -309,7 +268,7 @@ p { margin: 0; }
   display: grid; place-items: center; text-align: center; padding: 12px;
   background: repeating-linear-gradient(135deg, var(--panel) 0 12px, color-mix(in srgb, var(--line) 70%, var(--panel)) 12px 13px);
   border: 1px dashed var(--line);
-  font: 500 12px/1.4 var(--mono); color: var(--muted); letter-spacing: .1em; text-transform: uppercase;
+  font: 500 13px/1.4 var(--mono); color: var(--muted); letter-spacing: .1em; text-transform: uppercase;
   width: 100%; height: 100%;
 }
 .ph-text { color: var(--muted); border: 1px dashed var(--line); padding: 14px 16px; font-size: 15px; }
@@ -321,18 +280,18 @@ p { margin: 0; }
 
 /* ——— Телефон ——— */
 @media (max-width: 860px) {
-  .about, .director, .reviews { grid-template-columns: minmax(0, 1fr); }
-  .poster, .score { position: static; }
+  .about, .director { grid-template-columns: minmax(0, 1fr); }
   .poster { max-width: 420px; }
   .director__photo { max-width: 320px; }
   .places { grid-template-columns: minmax(0, 1fr); }
+  .poster { position: static; }
 }
 @media (max-width: 560px) {
-  body { font-size: 16px; }
+  body { font-size: 17px; }
   .nav__logo { display: none; }
   .nav__links { margin-left: 0; }
   .cast { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .crew, .form__row { grid-template-columns: minmax(0, 1fr); }
+  .crew { grid-template-columns: minmax(0, 1fr); }
   .credits div { grid-template-columns: 7.5em 1fr; }
   .hero::before { background: linear-gradient(0deg, var(--ink) 10%, color-mix(in srgb, var(--ink) 55%, transparent)); }
 }
@@ -354,7 +313,6 @@ p { margin: 0; }
       <a href="#rezhisser">Режиссёр</a>
       <a href="#syomki">Съёмки</a>
       <a href="#video">Видео</a>
-      <a href="#otzyvy">Отзывы</a>
     </div>
   </div>
 </nav>
@@ -367,16 +325,6 @@ p { margin: 0; }
       <p class="eyebrow">«Казахфильм» · 1986 · приключенческий боевик</p>
       <h1 class="hero__title">Тайны мадам Вонг</h1>
       <p class="hero__lead">Советский теплоход «Иван Бунин» идёт из Сиднея в Гонконг. Среди туристов на борту — неуловимая королева пиратов мадам Вонг, а по её следу идёт комиссар полиции, у которого пираты похитили внука.</p>
-      <ul class="facts">
-        <li><b>1986</b><span>год выхода</span></li>
-        <li><b>91 мин</b><span>длительность</span></li>
-        <li><b>30,1 млн</b><span>зрителей в кинотеатрах</span></li>
-        <li><b>5-е место</b><span>в прокате СССР 1986 года</span></li>
-      </ul>
-      <div class="actions">
-        <a class="btn" href="#video">▶ Смотреть фильм</a>
-        <a class="btn btn--ghost" href="#syuzhet">Читать о фильме</a>
-      </div>
     </div>
   </div>
 </header>
@@ -623,71 +571,6 @@ p { margin: 0; }
         <small>Откроется на YouTube · 1 ч 31 мин · Full HD</small>
       </span>
     </a>
-    <div class="video-meta">
-      <span>Канал «КиноАрхив [4К]», ремастеринг</span>
-      <a href="https://www.youtube.com/watch?v=2vHOqxhaLdc" target="_blank" rel="noopener">Другая версия на канале «Киносмотрины»</a>
-    </div>
-  </div>
-</section>
-
-<!-- 8. Отзывы -->
-<section class="section" id="otzyvy">
-  <div class="wrap">
-    <div class="section__head">
-      <p class="eyebrow">Отзывы</p>
-      <h2 class="section__title">Что говорят <em>зрители</em></h2>
-      <p class="section__intro">Мнения о фильме разделились. Одни считают его классикой советских приключений, другие сравнивают с «Пиратами XX века» не в его пользу.</p>
-    </div>
-    <div class="reviews">
-      <div class="score">
-        <p class="score__num">7,5<small>/10</small></p>
-        <p>Оценка зрителей на сайте Кино-Театр.Ру, 72 голоса.</p>
-        <p>30,1 миллиона билетов в 1986 году. Пятое место в советском прокате.</p>
-      </div>
-      <div class="quotes" id="quotes">
-        <figure class="quote quote--critic">
-          <blockquote>«Размах съёмок, звёздный состав и интрига оказались недостаточными для повторения успеха „Пиратов XX века“, хотя провальным фильм назвать никак нельзя».</blockquote>
-          <figcaption><span class="tag tag--mid">Рецензия</span><b>picturehistory</b><span>ЖЖ, история кино</span></figcaption>
-        </figure>
-        <figure class="quote">
-          <blockquote>«Прекрасный фильм. Один из лучших советских фильмов приключенческого жанра».</blockquote>
-          <figcaption><span class="tag tag--plus">Нравится</span><b>Руслан Горштейн, Москва</b><span>20.04.2024 · Кино-Театр.Ру</span></figcaption>
-        </figure>
-        <figure class="quote">
-          <blockquote>«Всего две фишки в этом фильме понравились. Это яхта на автопилоте. Второе — это финт от Абдулова в конце. Так подумалось, какая Вонг из Мирошниченко? А потом, можно допустить, что Вонг она по мужу: все ищут азиатку, а она европейка. А? Вот это поворот».</blockquote>
-          <figcaption><span class="tag tag--mid">Смешанно</span><b>Балтиец</b><span>01.02.2024 · Кино-Театр.Ру</span></figcaption>
-        </figure>
-        <figure class="quote">
-          <blockquote>«Хотели повторить успех „Пиратов 20 века“. Не получилось. Хотя в основе фильма реальный случай, была такая мадам-пират. Мирошниченко сыграла хорошо».</blockquote>
-          <figcaption><span class="tag tag--minus">Не впечатлил</span><b>nord</b><span>16.12.2024 · Кино-Театр.Ру</span></figcaption>
-        </figure>
-        <figure class="quote">
-          <blockquote>«Смотрю раз десятый, наверное. Любуюсь, конечно, на всех актёров. Добрая память ушедшим актёрам, долгой жизни ныне живущим».</blockquote>
-          <figcaption><span class="tag tag--plus">Нравится</span><b>Страничка</b><span>17.03.2025 · Кино-Театр.Ру</span></figcaption>
-        </figure>
-        <figure class="quote">
-          <blockquote>«Фильм хороший, но послабее, чем „Пираты XX века“. Тайны мадам Вонг — хороший фильм, но немного грустный».</blockquote>
-          <figcaption><span class="tag tag--mid">Смешанно</span><b>Руслан Горштейн, Москва</b><span>10.05.2024 · Кино-Театр.Ру</span></figcaption>
-        </figure>
-
-        <form class="form" id="review-form">
-          <h3>Оставить отзыв</h3>
-          <div class="form__row">
-            <label for="rv-name">Ваше имя<input id="rv-name" name="name" required maxlength="40" placeholder="Например, Дарья"></label>
-            <label for="rv-mood">Впечатление
-              <select id="rv-mood" name="mood">
-                <option value="plus">Нравится</option>
-                <option value="mid">Смешанно</option>
-                <option value="minus">Не впечатлил</option>
-              </select>
-            </label>
-          </div>
-          <label for="rv-text">Отзыв<textarea id="rv-text" name="text" required maxlength="600" placeholder="Что запомнилось в фильме?"></textarea></label>
-          <div class="actions"><button class="btn" type="submit">Опубликовать отзыв</button></div>
-          <p class="form__status" id="rv-status" role="status"></p>
-        </form>
-      </div>
-    </div>
   </div>
 </section>
 
@@ -699,7 +582,6 @@ p { margin: 0; }
     <ul>
       <li><a href="https://ru.wikipedia.org/wiki/Тайны_мадам_Вонг" target="_blank" rel="noopener">Википедия</a></li>
       <li><a href="https://stuki-druki.com/film/tayni-madam-vong.php" target="_blank" rel="noopener">Стуки-Друки</a></li>
-      <li><a href="https://www.kino-teatr.ru/kino/movie/sov/7001/forum/" target="_blank" rel="noopener">Кино-Театр.Ру</a></li>
       <li><a href="https://picturehistory.livejournal.com/5869755.html" target="_blank" rel="noopener">picturehistory</a></li>
     </ul>
   </div>
@@ -730,42 +612,6 @@ p { margin: 0; }
   });
 })();
 
-// Отзывы: сохраняются в этом браузере
-(() => {
-  const KEY = 'madam-vong-reviews';
-  const form = document.getElementById('review-form');
-  const status = document.getElementById('rv-status');
-  const labels = { plus: 'Нравится', mid: 'Смешанно', minus: 'Не впечатлил' };
-  const load = () => { try { return JSON.parse(localStorage.getItem(KEY)) || []; } catch { return []; } };
-  const save = (list) => { try { localStorage.setItem(KEY, JSON.stringify(list)); return true; } catch { return false; } };
-  const render = (r) => {
-    const fig = document.createElement('figure');
-    fig.className = 'quote';
-    const q = document.createElement('blockquote');
-    q.textContent = `«${r.text}»`;
-    const c = document.createElement('figcaption');
-    const tag = document.createElement('span');
-    tag.className = `tag tag--${r.mood}`; tag.textContent = labels[r.mood] || labels.mid;
-    const who = document.createElement('b'); who.textContent = r.name;
-    const when = document.createElement('span'); when.textContent = `${r.date} · отзыв с этого сайта`;
-    c.append(tag, who, when); fig.append(q, c);
-    form.before(fig);
-  };
-  load().forEach(render);
-  form.addEventListener('submit', (e) => {
-    e.preventDefault();
-    const d = new FormData(form);
-    const r = {
-      name: d.get('name').trim(), text: d.get('text').trim(), mood: d.get('mood'),
-      date: new Date().toLocaleDateString('ru-RU'),
-    };
-    if (!r.name || !r.text) { status.textContent = 'Заполните имя и текст отзыва.'; return; }
-    render(r);
-    const list = load(); list.push(r);
-    status.textContent = save(list) ? 'Отзыв опубликован.' : 'Отзыв показан, но браузер не дал его сохранить.';
-    form.reset();
-  });
-})();
 </script>
 </body>
 </html>
