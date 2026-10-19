@@ -96,7 +96,7 @@ p { margin: 0; }
 .hero__bg {
   position: absolute; inset: 0; z-index: -2;
   width: 100%; height: 100%;
-  object-fit: cover; object-position: 70% 30%;
+  object-fit: cover; object-position: 50% 25%;
   animation: drift 24s ease-in-out infinite alternate;
 }
 .hero::before {
@@ -105,6 +105,7 @@ p { margin: 0; }
     linear-gradient(90deg, var(--ink) 8%, color-mix(in srgb, var(--ink) 70%, transparent) 50%, color-mix(in srgb, var(--ink) 20%, transparent)),
     linear-gradient(0deg, var(--ink) 0%, transparent 45%);
 }
+@media (min-width: 861px) { .hero__bg { left: auto; width: 66%; -webkit-mask-image: linear-gradient(90deg, transparent, #000 30%); mask-image: linear-gradient(90deg, transparent, #000 30%); } }
 @keyframes drift { from { transform: scale(1.04); } to { transform: scale(1.12) translateX(-2%); } }
 .hero__inner { display: grid; gap: 24px; max-width: 720px; }
 .hero__title {
@@ -198,22 +199,13 @@ p { margin: 0; }
 .actor__name { font: 500 clamp(17px, 2.2vw, 24px)/1.1 var(--display); text-transform: uppercase; letter-spacing: .02em; }
 .actor__role { font-size: 16px; line-height: 1.45; color: var(--muted); }
 .actor__role b { color: var(--gold); font-weight: 600; }
-.also { margin-top: 48px; padding-top: 24px; border-top: 1px solid var(--line); display: grid; gap: 14px; }
-.also ul { columns: 2 280px; column-gap: 40px; padding: 0; margin: 0; list-style: none; }
-.also li { break-inside: avoid; padding-block: 6px; font-size: 17px; color: var(--muted); }
-.also li b { color: var(--paper); font-weight: 500; }
 
 /* ——— 5. Режиссёр ——— */
 .director { display: grid; grid-template-columns: minmax(0, 340px) minmax(0, 1fr); gap: clamp(28px, 5vw, 72px); align-items: start; }
-.director__photo img { width: 100%; aspect-ratio: 4 / 5; object-fit: cover; box-shadow: -14px 14px 0 var(--gold); }
+.director__photo img { width: 100%; aspect-ratio: 4 / 5; object-fit: cover; object-position: center 20%; box-shadow: -14px 14px 0 var(--gold); }
 .director__body { display: grid; gap: 20px; max-width: 62ch; }
 .director__name { font-family: var(--title); font-size: clamp(40px, 6vw, 72px); font-weight: 700; text-transform: uppercase; }
 .director__years { font: 400 14px/1.4 var(--mono); color: var(--muted); letter-spacing: .04em; }
-.films { list-style: none; padding: 0; margin: 0; display: grid; }
-.films li { display: grid; grid-template-columns: 4.5em 1fr; gap: 12px; padding-block: 8px; border-bottom: 1px solid var(--line); font-size: 16px; }
-.films li span { font: 500 14px/1.6 var(--mono); color: var(--muted); font-variant-numeric: tabular-nums; }
-.films li.is-this { color: var(--gold); }
-.films li.is-this span { color: var(--gold); }
 .crew { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; margin-top: 8px; }
 .crew__item { display: flex; gap: 14px; align-items: center; background: var(--panel); padding: 14px; }
 .crew__item img { width: 64px; height: 64px; object-fit: cover; border-radius: 50%; flex: none; }
@@ -226,11 +218,6 @@ p { margin: 0; }
 .place { background: var(--panel); display: grid; grid-template-rows: auto 1fr; }
 .place__img { aspect-ratio: 16 / 10; overflow: hidden; }
 .place__img img { width: 100%; height: 100%; object-fit: cover; }
-.place__img--type {
-  display: grid; place-items: center; background:
-    repeating-linear-gradient(135deg, var(--panel) 0 14px, color-mix(in srgb, var(--red) 22%, var(--panel)) 14px 15px);
-  font: 700 clamp(30px, 4vw, 46px)/1 var(--display); color: var(--gold); text-transform: uppercase; letter-spacing: .04em;
-}
 .place__body { padding: 20px 22px 24px; display: grid; gap: 10px; align-content: start; }
 .place__where { font: 500 13px/1.4 var(--mono); color: var(--gold); letter-spacing: .1em; text-transform: uppercase; }
 .place h3 { font-size: 26px; font-weight: 500; text-transform: uppercase; }
@@ -349,7 +336,7 @@ p { margin: 0; }
         <p>В прокате 1986 года фильм занял пятое место: его посмотрели 30,1 миллиона зрителей. Повторить успех «Пиратов XX века» картине не удалось, но провалом её никто не назвал.</p>
       </div>
       <aside class="poster">
-        <img src="img/kadr-01.jpg" alt="Советский плакат фильма «Тайны мадам Вонг»" width="700" height="500">
+        <img src="img/poster.jpg" alt="Плакат фильма «Тайны мадам Вонг»" width="461" height="700">
         <dl class="credits">
           <div><dt>Режиссёр</dt><dd>Степан Пучинян</dd></div>
           <div><dt>Сценарий</dt><dd>Станислав Говорухин</dd></div>
@@ -460,19 +447,6 @@ p { margin: 0; }
         <p class="actor__role"><b>Бортпроводница</b> теплохода «Иван Бунин»</p>
       </li>
     </ul>
-    <div class="also">
-      <p class="eyebrow">Также в фильме</p>
-      <ul>
-        <li><b>Ованес Ванян</b> — Клаук, пират</li>
-        <li><b>Ментай Утепбергенов</b> — Сони, пират</li>
-        <li><b>Олег Ли</b> — Ван-Лю, секретарь мадам Вонг</li>
-        <li><b>Болот Бейшеналиев</b> — Лу</li>
-        <li><b>Булат Аюханов</b> — Пак, пират</li>
-        <li><b>Марина Левтова</b> — шантажистка</li>
-        <li><b>Ольга Спиркина</b> — Светлана, бортпроводница</li>
-        <li><b>Григорий Дунаев</b> — Юрий, штурман</li>
-      </ul>
-    </div>
   </div>
 </section>
 
@@ -492,16 +466,6 @@ p { margin: 0; }
         </div>
         <p>Советский и российский кинорежиссёр, сценарист и актёр. Окончил ВГИК дважды: экономический факультет в 1950 году и режиссёрский в 1966-м, в мастерской Якова Сегеля. С 1950 по 1964 год работал директором картин на Киностудии имени Горького, а потом сам стал режиссёром этой студии.</p>
         <p>Среди его работ много остросюжетного кино: «Повесть о чекисте», «Схватка», «Из жизни начальника уголовного розыска». «Тайны мадам Вонг» стали лидером проката 1986 года. Через пять лет он вернулся к морской теме в картине «Гангстеры в океане». Интересно, что режиссёр родился в Батуми, а именно там снимали «джунгли» для этого фильма.</p>
-        <ul class="films" aria-label="Фильмы Степана Пучиняна">
-          <li><span>1969</span>Повесть о чекисте</li>
-          <li><span>1972</span>Схватка</li>
-          <li><span>1976</span>Самый красивый конь</li>
-          <li><span>1979</span>День свадьбы придётся уточнить</li>
-          <li><span>1983</span>Из жизни начальника уголовного розыска</li>
-          <li class="is-this"><span>1986</span>Тайны мадам Вонг</li>
-          <li><span>1991</span>Гангстеры в океане</li>
-          <li><span>2011</span>Золотая рыбка в городе N</li>
-        </ul>
         <div class="crew">
           <div class="crew__item">
             <img src="img/d-govorukhin.jpg" alt="Станислав Говорухин" loading="lazy">
@@ -543,7 +507,7 @@ p { margin: 0; }
         </div>
       </article>
       <article class="place">
-        <div class="place__img place__img--type" aria-hidden="true">香港</div>
+        <div class="place__img"><img src="img/hongkong.jpg" alt="Вид на Гонконг с высоты" loading="lazy"></div>
         <div class="place__body">
           <p class="place__where">Гонконг</p>
           <h3>Настоящий город</h3>

@@ -96,7 +96,7 @@ p { margin: 0; }
 .hero__bg {
   position: absolute; inset: 0; z-index: -2;
   width: 100%; height: 100%;
-  object-fit: cover; object-position: 70% 30%;
+  object-fit: cover; object-position: 50% 25%;
   animation: drift 24s ease-in-out infinite alternate;
 }
 .hero::before {
@@ -105,6 +105,7 @@ p { margin: 0; }
     linear-gradient(90deg, var(--ink) 8%, color-mix(in srgb, var(--ink) 70%, transparent) 50%, color-mix(in srgb, var(--ink) 20%, transparent)),
     linear-gradient(0deg, var(--ink) 0%, transparent 45%);
 }
+@media (min-width: 861px) { .hero__bg { left: auto; width: 66%; -webkit-mask-image: linear-gradient(90deg, transparent, #000 30%); mask-image: linear-gradient(90deg, transparent, #000 30%); } }
 @keyframes drift { from { transform: scale(1.04); } to { transform: scale(1.12) translateX(-2%); } }
 .hero__inner { display: grid; gap: 24px; max-width: 720px; }
 .hero__title {
@@ -198,22 +199,13 @@ p { margin: 0; }
 .actor__name { font: 500 clamp(17px, 2.2vw, 24px)/1.1 var(--display); text-transform: uppercase; letter-spacing: .02em; }
 .actor__role { font-size: 16px; line-height: 1.45; color: var(--muted); }
 .actor__role b { color: var(--gold); font-weight: 600; }
-.also { margin-top: 48px; padding-top: 24px; border-top: 1px solid var(--line); display: grid; gap: 14px; }
-.also ul { columns: 2 280px; column-gap: 40px; padding: 0; margin: 0; list-style: none; }
-.also li { break-inside: avoid; padding-block: 6px; font-size: 17px; color: var(--muted); }
-.also li b { color: var(--paper); font-weight: 500; }
 
 /* ——— 5. Режиссёр ——— */
 .director { display: grid; grid-template-columns: minmax(0, 340px) minmax(0, 1fr); gap: clamp(28px, 5vw, 72px); align-items: start; }
-.director__photo img { width: 100%; aspect-ratio: 4 / 5; object-fit: cover; box-shadow: -14px 14px 0 var(--gold); }
+.director__photo img { width: 100%; aspect-ratio: 4 / 5; object-fit: cover; object-position: center 20%; box-shadow: -14px 14px 0 var(--gold); }
 .director__body { display: grid; gap: 20px; max-width: 62ch; }
 .director__name { font-family: var(--title); font-size: clamp(40px, 6vw, 72px); font-weight: 700; text-transform: uppercase; }
 .director__years { font: 400 14px/1.4 var(--mono); color: var(--muted); letter-spacing: .04em; }
-.films { list-style: none; padding: 0; margin: 0; display: grid; }
-.films li { display: grid; grid-template-columns: 4.5em 1fr; gap: 12px; padding-block: 8px; border-bottom: 1px solid var(--line); font-size: 16px; }
-.films li span { font: 500 14px/1.6 var(--mono); color: var(--muted); font-variant-numeric: tabular-nums; }
-.films li.is-this { color: var(--gold); }
-.films li.is-this span { color: var(--gold); }
 .crew { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; margin-top: 8px; }
 .crew__item { display: flex; gap: 14px; align-items: center; background: var(--panel); padding: 14px; }
 .crew__item img { width: 64px; height: 64px; object-fit: cover; border-radius: 50%; flex: none; }
@@ -226,11 +218,6 @@ p { margin: 0; }
 .place { background: var(--panel); display: grid; grid-template-rows: auto 1fr; }
 .place__img { aspect-ratio: 16 / 10; overflow: hidden; }
 .place__img img { width: 100%; height: 100%; object-fit: cover; }
-.place__img--type {
-  display: grid; place-items: center; background:
-    repeating-linear-gradient(135deg, var(--panel) 0 14px, color-mix(in srgb, var(--red) 22%, var(--panel)) 14px 15px);
-  font: 700 clamp(30px, 4vw, 46px)/1 var(--display); color: var(--gold); text-transform: uppercase; letter-spacing: .04em;
-}
 .place__body { padding: 20px 22px 24px; display: grid; gap: 10px; align-content: start; }
 .place__where { font: 500 13px/1.4 var(--mono); color: var(--gold); letter-spacing: .1em; text-transform: uppercase; }
 .place h3 { font-size: 26px; font-weight: 500; text-transform: uppercase; }
@@ -420,12 +407,6 @@ p { margin: 0; }
           <p class="director__years">[Дата рождения — дата смерти, звания]</p>
         </div>
         <p class="ph-text">[Коротко о режиссёре: где учился, чем известен.]</p>
-        <ul class="films" aria-label="Фильмы режиссёра">
-          <li><span>[Год]</span>[Фильм]</li>
-          <li><span>[Год]</span>[Фильм]</li>
-          <li class="is-this"><span>[Год]</span>[Этот фильм]</li>
-          <li><span>[Год]</span>[Фильм]</li>
-        </ul>
       </div>
     </div>
   </div>
