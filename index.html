@@ -1,0 +1,771 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Тайны мадам Вонг</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Literata:opsz,wght@7..72,400;7..72,600&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+/* Раскладка: киноафиша 1986 года. Тёмный зал, плакатный жёлтый заголовок,
+   красные плашки, кадры на плёнке. Одна тёмная тема — осознанно. */
+:root {
+  --ink: #0c1726;        /* ночное море, фон */
+  --panel: #13223a;      /* карточки и полосы */
+  --line: #24395a;       /* тонкие линии */
+  --paper: #efe7d6;      /* основной текст */
+  --muted: #a3b2c6;      /* второстепенный текст */
+  --gold: #f2c230;       /* жёлтый с афиши */
+  --red: #d9432c;        /* красный с афиши */
+  --display: "Oswald", "Arial Narrow", "Segoe UI", sans-serif;
+  --body: "Literata", "Iowan Old Style", "Times New Roman", serif;
+  --mono: "IBM Plex Mono", ui-monospace, "Cascadia Mono", Consolas, monospace;
+  --gutter: clamp(16px, 4vw, 48px);
+  --wrap: 1140px;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; scroll-padding-top: 64px; }
+body {
+  margin: 0;
+  background: var(--ink);
+  color: var(--paper);
+  font: 400 17px/1.65 var(--body);
+  -webkit-font-smoothing: antialiased;
+}
+img { max-width: 100%; display: block; }
+a { color: var(--gold); }
+:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; }
+h1, h2, h3 { font-family: var(--display); text-wrap: balance; margin: 0; line-height: 1.05; }
+p { margin: 0; }
+
+.wrap { max-width: var(--wrap); margin-inline: auto; padding-inline: var(--gutter); }
+.eyebrow {
+  font: 500 12px/1.4 var(--mono);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+
+/* ——— Навигация ——— */
+.nav {
+  position: sticky;
+  top: env(safe-area-inset-top, 0px);
+  z-index: 10;
+  background: color-mix(in srgb, var(--ink) 88%, transparent);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--line);
+}
+.nav .wrap { display: flex; align-items: center; gap: 24px; height: 56px; }
+.nav__logo {
+  font: 700 18px/1 var(--display);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--gold);
+  text-decoration: none;
+  white-space: nowrap;
+}
+.nav__links {
+  display: flex; gap: 20px;
+  overflow-x: auto; scrollbar-width: none;
+  margin-left: auto; min-width: 0;
+}
+.nav__links::-webkit-scrollbar { display: none; }
+.nav__links a {
+  font: 500 13px/1 var(--mono);
+  letter-spacing: 0.06em;
+  color: var(--muted);
+  text-decoration: none;
+  white-space: nowrap;
+  padding-block: 8px;
+}
+.nav__links a:hover { color: var(--paper); }
+
+/* ——— 1. Шапка ——— */
+.hero {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  padding-block: clamp(96px, 14vw, 180px) clamp(56px, 8vw, 96px);
+}
+.hero__bg {
+  position: absolute; inset: 0; z-index: -2;
+  width: 100%; height: 100%;
+  object-fit: cover; object-position: 70% 30%;
+  animation: drift 24s ease-in-out infinite alternate;
+}
+.hero::before {
+  content: ""; position: absolute; inset: 0; z-index: -1;
+  background:
+    linear-gradient(90deg, var(--ink) 8%, color-mix(in srgb, var(--ink) 70%, transparent) 50%, color-mix(in srgb, var(--ink) 20%, transparent)),
+    linear-gradient(0deg, var(--ink) 0%, transparent 45%);
+}
+@keyframes drift { from { transform: scale(1.04); } to { transform: scale(1.12) translateX(-2%); } }
+.hero__inner { display: grid; gap: 24px; max-width: 720px; }
+.hero__title {
+  font-size: clamp(56px, 11vw, 132px);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: -0.01em;
+  line-height: 0.92;
+  color: var(--gold);
+  text-shadow: 0.045em 0.035em 0 var(--red);
+}
+.hero__lead { font-size: clamp(18px, 2.1vw, 21px); max-width: 34em; color: var(--paper); }
+.facts { display: flex; flex-wrap: wrap; gap: 10px 28px; padding: 0; margin: 8px 0 0; list-style: none; }
+.facts li { display: grid; gap: 2px; }
+.facts b { font: 600 26px/1 var(--display); color: var(--paper); font-variant-numeric: tabular-nums; }
+.facts span { font: 400 12px/1.3 var(--mono); color: var(--muted); letter-spacing: 0.04em; }
+.actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 8px; }
+.btn {
+  display: inline-flex; align-items: center; gap: 10px;
+  font: 600 15px/1 var(--display);
+  letter-spacing: 0.08em; text-transform: uppercase;
+  padding: 15px 22px;
+  border: 2px solid var(--gold);
+  color: var(--ink); background: var(--gold);
+  text-decoration: none; cursor: pointer;
+  transition: transform .15s, background .15s;
+}
+.btn:hover { transform: translateY(-2px); }
+.btn--ghost { background: transparent; color: var(--gold); }
+
+/* ——— Секции ——— */
+.section { padding-block: clamp(64px, 9vw, 112px); border-top: 1px solid var(--line); }
+.section__head { display: grid; gap: 12px; margin-bottom: clamp(32px, 5vw, 56px); max-width: 760px; }
+.section__title {
+  font-size: clamp(36px, 6vw, 64px);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.005em;
+}
+.section__title em { font-style: normal; color: var(--gold); }
+.section__intro { color: var(--muted); font-size: 18px; max-width: 40em; }
+
+/* ——— 2. Сюжет ——— */
+.about { display: grid; grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr); gap: clamp(32px, 6vw, 80px); align-items: start; }
+.prose { display: grid; gap: 20px; max-width: 62ch; }
+.prose h3 { font-size: 24px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.04em; color: var(--gold); margin-top: 16px; }
+.prose p:not(.ph-text):first-of-type::first-letter {
+  float: left; font: 700 4.1em/0.82 var(--display); color: var(--red);
+  margin: 0.06em 0.1em 0 0;
+}
+.poster { display: grid; gap: 20px; position: sticky; top: 88px; }
+.poster img { width: 100%; box-shadow: 14px 14px 0 var(--red); }
+.credits { display: grid; gap: 0; margin: 0; }
+.credits div { display: grid; grid-template-columns: 9em 1fr; gap: 12px; padding-block: 9px; border-bottom: 1px solid var(--line); }
+.credits dt { font: 400 12px/1.6 var(--mono); color: var(--muted); letter-spacing: 0.04em; text-transform: uppercase; }
+.credits dd { margin: 0; font-size: 15px; font-variant-numeric: tabular-nums; }
+
+/* ——— 3. Кадры: плёнка ——— */
+.strip {
+  --hole: color-mix(in srgb, var(--ink) 100%, transparent);
+  background: #050a12;
+  padding-block: 34px;
+  position: relative;
+}
+.strip::before, .strip::after {
+  content: ""; position: absolute; left: 0; right: 0; height: 14px;
+  background: repeating-linear-gradient(90deg, transparent 0 14px, var(--line) 14px 32px);
+  background-size: 32px 10px; background-repeat: repeat-x; background-position: 0 center;
+  -webkit-mask: linear-gradient(#000 0 0); opacity: .9;
+}
+.strip::before { top: 10px; }
+.strip::after { bottom: 10px; }
+.gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 250px), 1fr)); gap: 10px; padding: 0; margin: 0; list-style: none; }
+.gallery button {
+  all: unset; cursor: zoom-in; display: block; position: relative;
+  aspect-ratio: 4 / 3; overflow: hidden; width: 100%; background: var(--panel);
+}
+.gallery button:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+.gallery img { width: 100%; height: 100%; object-fit: cover; transition: transform .4s, filter .4s; filter: saturate(.9); }
+.gallery button:hover img { transform: scale(1.05); filter: saturate(1.1); }
+.gallery small {
+  position: absolute; left: 8px; bottom: 8px;
+  font: 500 11px/1 var(--mono); letter-spacing: 0.1em;
+  background: var(--ink); color: var(--gold); padding: 5px 7px;
+}
+
+.lightbox { border: 0; padding: 0; background: transparent; max-width: min(1100px, 94vw); width: 100%; color: var(--paper); }
+.lightbox::backdrop { background: rgb(4 8 14 / .92); }
+.lightbox figure { margin: 0; display: grid; gap: 12px; }
+.lightbox img { width: 100%; max-height: 80vh; object-fit: contain; background: #000; }
+.lightbox__bar { display: flex; align-items: center; gap: 12px; }
+.lightbox__bar figcaption { margin-right: auto; font: 400 13px/1.4 var(--mono); color: var(--muted); }
+.icon-btn {
+  font: 600 14px/1 var(--display); letter-spacing: .06em; text-transform: uppercase;
+  background: var(--panel); color: var(--paper); border: 1px solid var(--line);
+  padding: 10px 14px; cursor: pointer;
+}
+.icon-btn:hover { border-color: var(--gold); color: var(--gold); }
+
+/* ——— 4. Актёры ——— */
+.cast { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(12px, 2.4vw, 28px); padding: 0; margin: 0; list-style: none; }
+.actor { display: grid; gap: 12px; align-content: start; }
+.actor__photo { aspect-ratio: 4 / 5; overflow: hidden; background: var(--panel); position: relative; }
+.actor__photo img { width: 100%; height: 100%; object-fit: cover; object-position: center 20%; filter: grayscale(.25) contrast(1.05); transition: filter .3s; }
+.actor:hover .actor__photo img { filter: none; }
+.actor__name { font: 500 clamp(17px, 2.2vw, 24px)/1.1 var(--display); text-transform: uppercase; letter-spacing: .02em; }
+.actor__role { font-size: 15px; line-height: 1.45; color: var(--muted); }
+.actor__role b { color: var(--gold); font-weight: 600; }
+.also { margin-top: 48px; padding-top: 24px; border-top: 1px solid var(--line); display: grid; gap: 14px; }
+.also ul { columns: 2 280px; column-gap: 40px; padding: 0; margin: 0; list-style: none; }
+.also li { break-inside: avoid; padding-block: 6px; font-size: 15px; color: var(--muted); }
+.also li b { color: var(--paper); font-weight: 500; }
+
+/* ——— 5. Режиссёр ——— */
+.director { display: grid; grid-template-columns: minmax(0, 340px) minmax(0, 1fr); gap: clamp(28px, 5vw, 72px); align-items: start; }
+.director__photo img { width: 100%; aspect-ratio: 4 / 5; object-fit: cover; box-shadow: -14px 14px 0 var(--gold); }
+.director__body { display: grid; gap: 20px; max-width: 62ch; }
+.director__name { font-size: clamp(40px, 6vw, 72px); font-weight: 700; text-transform: uppercase; }
+.director__years { font: 400 14px/1.4 var(--mono); color: var(--muted); letter-spacing: .04em; }
+.films { list-style: none; padding: 0; margin: 0; display: grid; }
+.films li { display: grid; grid-template-columns: 4.5em 1fr; gap: 12px; padding-block: 8px; border-bottom: 1px solid var(--line); font-size: 16px; }
+.films li span { font: 500 14px/1.6 var(--mono); color: var(--muted); font-variant-numeric: tabular-nums; }
+.films li.is-this { color: var(--gold); }
+.films li.is-this span { color: var(--gold); }
+.crew { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; margin-top: 8px; }
+.crew__item { display: flex; gap: 14px; align-items: center; background: var(--panel); padding: 14px; }
+.crew__item img { width: 64px; height: 64px; object-fit: cover; border-radius: 50%; flex: none; }
+.crew__item .mono-avatar { width: 64px; height: 64px; border-radius: 50%; flex: none; display: grid; place-items: center; background: var(--line); font: 600 22px/1 var(--display); color: var(--gold); }
+.crew__item b { display: block; font: 500 17px/1.2 var(--display); text-transform: uppercase; }
+.crew__item small { font: 400 12px/1.4 var(--mono); color: var(--muted); }
+
+/* ——— 6. Места съёмок ——— */
+.places { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(14px, 2.4vw, 28px); }
+.place { background: var(--panel); display: grid; grid-template-rows: auto 1fr; }
+.place__img { aspect-ratio: 16 / 10; overflow: hidden; }
+.place__img img { width: 100%; height: 100%; object-fit: cover; }
+.place__img--type {
+  display: grid; place-items: center; background:
+    repeating-linear-gradient(135deg, var(--panel) 0 14px, color-mix(in srgb, var(--red) 22%, var(--panel)) 14px 15px);
+  font: 700 clamp(30px, 4vw, 46px)/1 var(--display); color: var(--gold); text-transform: uppercase; letter-spacing: .04em;
+}
+.place__body { padding: 20px 22px 24px; display: grid; gap: 10px; align-content: start; }
+.place__where { font: 500 12px/1.4 var(--mono); color: var(--gold); letter-spacing: .1em; text-transform: uppercase; }
+.place h3 { font-size: 26px; font-weight: 500; text-transform: uppercase; }
+.place p { font-size: 15px; color: var(--muted); }
+.note { margin-top: 28px; font-size: 16px; color: var(--muted); max-width: 62ch; padding-left: 18px; border-left: 3px solid var(--red); }
+
+/* ——— 7. Трейлер ——— */
+.video {
+  position: relative; display: block; aspect-ratio: 16 / 9; max-width: 100%;
+  overflow: hidden; background: #000; text-decoration: none; color: var(--paper);
+}
+.video img { width: 100%; height: 100%; object-fit: cover; opacity: .72; transition: opacity .3s, transform .6s; }
+.video:hover img { opacity: .9; transform: scale(1.03); }
+.video__play {
+  position: absolute; inset: 0; display: grid; place-content: center; justify-items: center; gap: 16px; text-align: center; padding: 16px;
+}
+.video__play i {
+  width: clamp(72px, 10vw, 112px); aspect-ratio: 1; border-radius: 50%;
+  background: var(--red); display: grid; place-items: center;
+  box-shadow: 0 0 0 10px color-mix(in srgb, var(--red) 30%, transparent);
+}
+.video__play i::after { content: ""; border-left: 26px solid var(--paper); border-block: 16px solid transparent; margin-left: 7px; }
+.video__play b { font: 600 clamp(20px, 3vw, 32px)/1.1 var(--display); text-transform: uppercase; letter-spacing: .04em; text-shadow: 0 2px 12px #000; }
+.video__play small { font: 400 13px/1.4 var(--mono); color: var(--paper); text-shadow: 0 1px 8px #000; }
+.video-meta { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px 24px; margin-top: 14px; font: 400 13px/1.5 var(--mono); color: var(--muted); }
+
+/* ——— 8. Отзывы ——— */
+.reviews { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 2fr); gap: clamp(28px, 5vw, 64px); align-items: start; }
+.score { display: grid; gap: 18px; position: sticky; top: 88px; }
+.score__num { font: 700 clamp(84px, 12vw, 132px)/0.85 var(--display); color: var(--gold); font-variant-numeric: tabular-nums; }
+.score__num small { font-size: .32em; color: var(--muted); font-weight: 400; }
+.score p:not(.score__num) { color: var(--muted); font-size: 15px; }
+.quotes { display: grid; gap: 16px; }
+.quote { margin: 0; padding: 22px 24px; background: var(--panel); display: grid; gap: 12px; }
+.quote--critic { background: transparent; border: 1px solid var(--gold); }
+.quote blockquote { margin: 0; font-size: 17px; line-height: 1.6; }
+.quote figcaption { display: flex; flex-wrap: wrap; gap: 4px 14px; font: 400 12px/1.5 var(--mono); color: var(--muted); letter-spacing: .03em; }
+.quote figcaption b { color: var(--paper); font-weight: 500; }
+.tag { font: 500 11px/1 var(--mono); letter-spacing: .1em; text-transform: uppercase; padding: 4px 7px; align-self: center; }
+.tag--plus { background: color-mix(in srgb, var(--gold) 20%, transparent); color: var(--gold); }
+.tag--minus { background: color-mix(in srgb, var(--red) 25%, transparent); color: #ff9a86; }
+.tag--mid { background: var(--line); color: var(--paper); }
+.form { display: grid; gap: 14px; margin-top: 24px; padding: 24px; border: 1px dashed var(--line); }
+.form h3 { font-size: 24px; font-weight: 500; text-transform: uppercase; }
+.form label { display: grid; gap: 6px; font: 400 12px/1.4 var(--mono); color: var(--muted); letter-spacing: .06em; text-transform: uppercase; }
+.form input, .form textarea, .form select {
+  font: 400 16px/1.5 var(--body); color: var(--paper);
+  background: var(--ink); border: 1px solid var(--line); padding: 12px 14px; width: 100%;
+}
+.form input:focus, .form textarea:focus, .form select:focus { outline: none; border-color: var(--gold); }
+.form textarea { min-height: 110px; resize: vertical; }
+.form__row { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); gap: 14px; }
+.form__status { font: 400 13px/1.4 var(--mono); color: var(--gold); min-height: 1.4em; }
+
+/* ——— Подвал ——— */
+.footer { border-top: 1px solid var(--line); padding-block: 40px 56px; color: var(--muted); font-size: 14px; }
+.footer .wrap { display: grid; gap: 14px; }
+.footer ul { margin: 0; padding: 0; list-style: none; display: flex; flex-wrap: wrap; gap: 6px 20px; font: 400 13px/1.5 var(--mono); }
+.footer a { color: var(--muted); }
+.footer a:hover { color: var(--gold); }
+
+/* ——— Макет: заглушки ——— */
+.ph {
+  display: grid; place-items: center; text-align: center; padding: 12px;
+  background: repeating-linear-gradient(135deg, var(--panel) 0 12px, color-mix(in srgb, var(--line) 70%, var(--panel)) 12px 13px);
+  border: 1px dashed var(--line);
+  font: 500 12px/1.4 var(--mono); color: var(--muted); letter-spacing: .1em; text-transform: uppercase;
+  width: 100%; height: 100%;
+}
+.ph-text { color: var(--muted); border: 1px dashed var(--line); padding: 14px 16px; font-size: 15px; }
+.badge-maket {
+  position: fixed; right: 12px; bottom: calc(12px + env(safe-area-inset-bottom, 0px)); z-index: 20;
+  font: 600 12px/1 var(--mono); letter-spacing: .12em; text-transform: uppercase;
+  background: var(--red); color: var(--paper); padding: 8px 10px;
+}
+
+/* ——— Телефон ——— */
+@media (max-width: 860px) {
+  .about, .director, .reviews { grid-template-columns: minmax(0, 1fr); }
+  .poster, .score { position: static; }
+  .poster { max-width: 420px; }
+  .director__photo { max-width: 320px; }
+  .places { grid-template-columns: minmax(0, 1fr); }
+}
+@media (max-width: 560px) {
+  body { font-size: 16px; }
+  .nav__logo { display: none; }
+  .nav__links { margin-left: 0; }
+  .cast { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .crew, .form__row { grid-template-columns: minmax(0, 1fr); }
+  .credits div { grid-template-columns: 7.5em 1fr; }
+  .hero::before { background: linear-gradient(0deg, var(--ink) 10%, color-mix(in srgb, var(--ink) 55%, transparent)); }
+}
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}
+</style>
+</head>
+<body>
+
+<nav class="nav" aria-label="Разделы">
+  <div class="wrap">
+    <a class="nav__logo" href="#top">Мадам Вонг</a>
+    <div class="nav__links">
+      <a href="#syuzhet">Сюжет</a>
+      <a href="#kadry">Кадры</a>
+      <a href="#aktery">Актёры</a>
+      <a href="#rezhisser">Режиссёр</a>
+      <a href="#syomki">Съёмки</a>
+      <a href="#video">Видео</a>
+      <a href="#otzyvy">Отзывы</a>
+    </div>
+  </div>
+</nav>
+
+<!-- 1. Шапка -->
+<header class="hero" id="top">
+  <img class="hero__bg" src="img/hero.jpg" alt="">
+  <div class="wrap">
+    <div class="hero__inner">
+      <p class="eyebrow">«Казахфильм» · 1986 · приключенческий боевик</p>
+      <h1 class="hero__title">Тайны мадам Вонг</h1>
+      <p class="hero__lead">Советский теплоход «Иван Бунин» идёт из Сиднея в Гонконг. Среди туристов на борту — неуловимая королева пиратов мадам Вонг, а по её следу идёт комиссар полиции, у которого пираты похитили внука.</p>
+      <ul class="facts">
+        <li><b>1986</b><span>год выхода</span></li>
+        <li><b>91 мин</b><span>длительность</span></li>
+        <li><b>30,1 млн</b><span>зрителей в кинотеатрах</span></li>
+        <li><b>5-е место</b><span>в прокате СССР 1986 года</span></li>
+      </ul>
+      <div class="actions">
+        <a class="btn" href="#video">▶ Смотреть фильм</a>
+        <a class="btn btn--ghost" href="#syuzhet">Читать о фильме</a>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main>
+
+<!-- 2. Сюжет -->
+<section class="section" id="syuzhet">
+  <div class="wrap">
+    <div class="section__head">
+      <p class="eyebrow">О фильме</p>
+      <h2 class="section__title">Сюжет и <em>история</em></h2>
+    </div>
+    <div class="about">
+      <div class="prose">
+        <p>Советский теплоход «Иван Бунин» зафрахтовала зарубежная туристическая фирма. Лайнер идёт по Тихому океану по маршруту Сидней — Гонконг. В числе пассажиров оказывается глава крупного пиратского синдиката, неуловимая мадам Юлия Вонг, вместе со своими подручными.</p>
+        <p>Одновременно по следу синдиката идёт комиссар полиции Гонконга Томпсон. Он русский эмигрант, сын бывшего министра правительства Российской империи. Для него это дело личное: люди мадам Вонг похитили его внука. Чтобы вернуть мальчика, комиссару нужно срочно найти сокровища пиратов и обменять их на заложника.</p>
+        <p>В эту историю втягивается и экипаж теплохода, прежде всего моряк Булат. Его сыграл не профессиональный актёр, а боксёр Серик Конакбаев, серебряный призёр Олимпийских игр 1980 года. Голос герою подарил актёр Борис Щербаков.</p>
+
+        <h3>Как появился фильм</h3>
+        <p>Сценарий написал Станислав Говорухин. Изначально картину задумывали как продолжение знаменитых «Пиратов XX века» (1979). Главные роли снова должны были сыграть Николай Ерёменко-младший и Талгат Нигматулин, но сценарий им не понравился, и они отказались. Тогда историю переписали под новых героев и убрали все связи с «Пиратами».</p>
+        <p>В прокате 1986 года фильм занял пятое место: его посмотрели 30,1 миллиона зрителей. Повторить успех «Пиратов XX века» картине не удалось, но провалом её никто не назвал.</p>
+      </div>
+      <aside class="poster">
+        <img src="img/kadr-01.jpg" alt="Советский плакат фильма «Тайны мадам Вонг»" width="700" height="500">
+        <dl class="credits">
+          <div><dt>Режиссёр</dt><dd>Степан Пучинян</dd></div>
+          <div><dt>Сценарий</dt><dd>Станислав Говорухин</dd></div>
+          <div><dt>Оператор</dt><dd>Абильтай Кастеев</dd></div>
+          <div><dt>Студия</dt><dd>«Казахфильм», «Совинфильм»</dd></div>
+          <div><dt>Страна</dt><dd>СССР</dd></div>
+          <div><dt>Жанр</dt><dd>Приключения, боевик</dd></div>
+          <div><dt>Время</dt><dd>91 минута</dd></div>
+        </dl>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<!-- 3. Кадры -->
+<section class="section" id="kadry">
+  <div class="wrap">
+    <div class="section__head">
+      <p class="eyebrow">Галерея</p>
+      <h2 class="section__title">Кадры <em>из фильма</em></h2>
+      <p class="section__intro">Нажмите на кадр, чтобы открыть его крупно. Листать можно стрелками на клавиатуре.</p>
+    </div>
+  </div>
+  <div class="strip">
+    <div class="wrap">
+      <ul class="gallery" id="gallery">
+        <li><button type="button" data-cap="Один из героев фильма"><img src="img/kadr-02.jpg" alt="Мужчина в белом халате" loading="lazy"><small>КАДР 01</small></button></li>
+        <li><button type="button" data-cap="Ирина Мирошниченко — мадам Вонг"><img src="img/kadr-03.jpg" alt="Мадам Вонг" loading="lazy"><small>КАДР 02</small></button></li>
+        <li><button type="button" data-cap="Напряжённый момент в каюте"><img src="img/kadr-05.jpg" alt="Мужчина с поднятыми руками" loading="lazy"><small>КАДР 03</small></button></li>
+        <li><button type="button" data-cap="Армен Джигарханян — комиссар Томпсон"><img src="img/kadr-06.jpg" alt="Комиссар Томпсон с пистолетом" loading="lazy"><small>КАДР 04</small></button></li>
+        <li><button type="button" data-cap="Комиссар Томпсон на острове"><img src="img/kadr-07.jpg" alt="Томпсон и мужчина в тёмных очках у скал" loading="lazy"><small>КАДР 05</small></button></li>
+        <li><button type="button" data-cap="Томпсон и Булат в джунглях"><img src="img/kadr-08.jpg" alt="Томпсон и Булат с рюкзаками в лесу" loading="lazy"><small>КАДР 06</small></button></li>
+        <li><button type="button" data-cap="Чёрно-белый фотокадр из фильма"><img src="img/kadr-09.jpg" alt="Черно-белый кадр" loading="lazy"><small>КАДР 07</small></button></li>
+        <li><button type="button" data-cap="Мадам Вонг"><img src="img/kadr-10.jpg" alt="Мадам Вонг в кресле" loading="lazy"><small>КАДР 08</small></button></li>
+        <li><button type="button" data-cap="Мадам Вонг и её люди"><img src="img/kadr-11.jpg" alt="Мадам Вонг с подручными" loading="lazy"><small>КАДР 09</small></button></li>
+        <li><button type="button" data-cap="Героиня в кимоно и моряк"><img src="img/kadr-12.jpg" alt="Девушка в кимоно и моряк" loading="lazy"><small>КАДР 10</small></button></li>
+        <li><button type="button" data-cap="Мадам Вонг под прицелом"><img src="img/kadr-13.jpg" alt="Мадам Вонг под прицелом пистолета" loading="lazy"><small>КАДР 11</small></button></li>
+        <li><button type="button" data-cap="Мадам Вонг в финале"><img src="img/kadr-14.jpg" alt="Мадам Вонг крупным планом" loading="lazy"><small>КАДР 12</small></button></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<dialog class="lightbox" id="lightbox" aria-label="Кадр крупно">
+  <figure>
+    <img id="lb-img" src="" alt="">
+    <div class="lightbox__bar">
+      <figcaption id="lb-cap"></figcaption>
+      <button class="icon-btn" type="button" id="lb-prev" aria-label="Предыдущий кадр">←</button>
+      <button class="icon-btn" type="button" id="lb-next" aria-label="Следующий кадр">→</button>
+      <button class="icon-btn" type="button" id="lb-close">Закрыть</button>
+    </div>
+  </figure>
+</dialog>
+
+<!-- 4. Актёры -->
+<section class="section" id="aktery">
+  <div class="wrap">
+    <div class="section__head">
+      <p class="eyebrow">В ролях</p>
+      <h2 class="section__title">Актёры <em>и роли</em></h2>
+      <p class="section__intro">В фильме снимались актёры со всего Союза: из России, Армении, Литвы, Казахстана, Узбекистана и Киргизии.</p>
+    </div>
+    <ul class="cast">
+      <li class="actor">
+        <div class="actor__photo"><img src="img/a-dzhigarkhanyan.jpg" alt="Армен Джигарханян" loading="lazy"></div>
+        <h3 class="actor__name">Армен Джигарханян</h3>
+        <p class="actor__role"><b>Томпсон</b>, комиссар полиции Гонконга, русский эмигрант</p>
+      </li>
+      <li class="actor">
+        <div class="actor__photo"><img src="img/a-miroshnichenko.jpg" alt="Ирина Мирошниченко" loading="lazy"></div>
+        <h3 class="actor__name">Ирина Мирошниченко</h3>
+        <p class="actor__role"><b>Мадам Юлия Вонг</b>, глава синдиката пиратов</p>
+      </li>
+      <li class="actor">
+        <div class="actor__photo"><img src="img/a-konakbaev.jpg" alt="Серик Конакбаев на ринге Олимпиады-80" loading="lazy" style="object-position: 22% 30%"></div>
+        <h3 class="actor__name">Серик Конакбаев</h3>
+        <p class="actor__role"><b>Булат</b>, моряк теплохода «Иван Бунин». Олимпийский призёр по боксу</p>
+      </li>
+      <li class="actor">
+        <div class="actor__photo"><img src="img/a-abdulov.jpg" alt="Александр Абдулов" loading="lazy"></div>
+        <h3 class="actor__name">Александр Абдулов</h3>
+        <p class="actor__role"><b>Доул</b>, пират</p>
+      </li>
+      <li class="actor">
+        <div class="actor__photo"><img src="img/a-kombarova.jpg" alt="Дилором Камбарова" loading="lazy"></div>
+        <h3 class="actor__name">Дилором Камбарова</h3>
+        <p class="actor__role"><b>Тиоти</b>, служанка и телохранитель мадам Вонг</p>
+      </li>
+      <li class="actor">
+        <div class="actor__photo"><img src="img/a-luzhina.jpg" alt="Лариса Лужина" loading="lazy"></div>
+        <h3 class="actor__name">Лариса Лужина</h3>
+        <p class="actor__role"><b>Фрау Шульц</b>, директор круиза</p>
+      </li>
+      <li class="actor">
+        <div class="actor__photo"><img src="img/a-zharikov.jpg" alt="Евгений Жариков" loading="lazy"></div>
+        <h3 class="actor__name">Евгений Жариков</h3>
+        <p class="actor__role"><b>Капитан</b> теплохода «Иван Бунин»</p>
+      </li>
+      <li class="actor">
+        <div class="actor__photo"><img src="img/a-masyulis.jpg" alt="Альгимантас Масюлис" loading="lazy" style="object-position: center 10%"></div>
+        <h3 class="actor__name">Альгимантас Масюлис</h3>
+        <p class="actor__role"><b>Стэн</b>, начальник комиссара Томпсона</p>
+      </li>
+      <li class="actor">
+        <div class="actor__photo"><img src="img/a-gvozdikova.jpg" alt="Наталья Гвоздикова" loading="lazy"></div>
+        <h3 class="actor__name">Наталья Гвоздикова</h3>
+        <p class="actor__role"><b>Бортпроводница</b> теплохода «Иван Бунин»</p>
+      </li>
+    </ul>
+    <div class="also">
+      <p class="eyebrow">Также в фильме</p>
+      <ul>
+        <li><b>Ованес Ванян</b> — Клаук, пират</li>
+        <li><b>Ментай Утепбергенов</b> — Сони, пират</li>
+        <li><b>Олег Ли</b> — Ван-Лю, секретарь мадам Вонг</li>
+        <li><b>Болот Бейшеналиев</b> — Лу</li>
+        <li><b>Булат Аюханов</b> — Пак, пират</li>
+        <li><b>Марина Левтова</b> — шантажистка</li>
+        <li><b>Ольга Спиркина</b> — Светлана, бортпроводница</li>
+        <li><b>Григорий Дунаев</b> — Юрий, штурман</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- 5. Режиссёр -->
+<section class="section" id="rezhisser">
+  <div class="wrap">
+    <div class="section__head">
+      <p class="eyebrow">За кадром</p>
+      <h2 class="section__title">Кто <em>снял</em> фильм</h2>
+    </div>
+    <div class="director">
+      <div class="director__photo"><img src="img/d-puchinyan.jpg" alt="Режиссёр Степан Пучинян" loading="lazy"></div>
+      <div class="director__body">
+        <div>
+          <h3 class="director__name">Степан Пучинян</h3>
+          <p class="director__years">28.11.1927, Батуми — 15.10.2018, Москва · Народный артист России</p>
+        </div>
+        <p>Советский и российский кинорежиссёр, сценарист и актёр. Окончил ВГИК дважды: экономический факультет в 1950 году и режиссёрский в 1966-м, в мастерской Якова Сегеля. С 1950 по 1964 год работал директором картин на Киностудии имени Горького, а потом сам стал режиссёром этой студии.</p>
+        <p>Среди его работ много остросюжетного кино: «Повесть о чекисте», «Схватка», «Из жизни начальника уголовного розыска». «Тайны мадам Вонг» стали лидером проката 1986 года. Через пять лет он вернулся к морской теме в картине «Гангстеры в океане». Интересно, что режиссёр родился в Батуми, а именно там снимали «джунгли» для этого фильма.</p>
+        <ul class="films" aria-label="Фильмы Степана Пучиняна">
+          <li><span>1969</span>Повесть о чекисте</li>
+          <li><span>1972</span>Схватка</li>
+          <li><span>1976</span>Самый красивый конь</li>
+          <li><span>1979</span>День свадьбы придётся уточнить</li>
+          <li><span>1983</span>Из жизни начальника уголовного розыска</li>
+          <li class="is-this"><span>1986</span>Тайны мадам Вонг</li>
+          <li><span>1991</span>Гангстеры в океане</li>
+          <li><span>2011</span>Золотая рыбка в городе N</li>
+        </ul>
+        <div class="crew">
+          <div class="crew__item">
+            <img src="img/d-govorukhin.jpg" alt="Станислав Говорухин" loading="lazy">
+            <div><b>Станислав Говорухин</b><small>сценарист, автор «Пиратов XX века»</small></div>
+          </div>
+          <div class="crew__item">
+            <span class="mono-avatar" aria-hidden="true">АК</span>
+            <div><b>Абильтай Кастеев</b><small>оператор-постановщик</small></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 6. Место съёмок -->
+<section class="section" id="syomki">
+  <div class="wrap">
+    <div class="section__head">
+      <p class="eyebrow">Место съёмок</p>
+      <h2 class="section__title">Где <em>снимали</em></h2>
+      <p class="section__intro">По сюжету действие идёт в Тихом океане и в Гонконге. Съёмочную группу за границу не выпустили, поэтому Азию «сыграли» Крым и Грузия.</p>
+    </div>
+    <div class="places">
+      <article class="place">
+        <div class="place__img"><img src="img/kadr-07.jpg" alt="Кадр из фильма: герои у скал на берегу" loading="lazy"></div>
+        <div class="place__body">
+          <p class="place__where">Крым · Судак</p>
+          <h3>Таинственный остров</h3>
+          <p>Сцены на острове пиратов снимали недалеко от Судака, на скалистом побережье Крыма.</p>
+        </div>
+      </article>
+      <article class="place">
+        <div class="place__img"><img src="img/kadr-08.jpg" alt="Кадр из фильма: Томпсон и Булат в зарослях" loading="lazy"></div>
+        <div class="place__body">
+          <p class="place__where">Грузия · Батуми</p>
+          <h3>Непроходимые джунгли</h3>
+          <p>Роль тропических джунглей досталась Батумскому ботаническому саду с его субтропическими растениями.</p>
+        </div>
+      </article>
+      <article class="place">
+        <div class="place__img place__img--type" aria-hidden="true">香港</div>
+        <div class="place__body">
+          <p class="place__where">Гонконг</p>
+          <h3>Настоящий город</h3>
+          <p>В фильме есть настоящие съёмки Гонконга, но саму съёмочную группу в Гонконг не выпустили.</p>
+        </div>
+      </article>
+    </div>
+    <p class="note">Помощь съёмочной группе оказало Черноморское морское пароходство: оно предоставило для съёмок свои корабли.</p>
+  </div>
+</section>
+
+<!-- 7. Трейлер -->
+<section class="section" id="video">
+  <div class="wrap">
+    <div class="section__head">
+      <p class="eyebrow">Видео</p>
+      <h2 class="section__title">Трейлер <em>и фильм</em></h2>
+      <p class="section__intro">Официального трейлера в открытом доступе нет. Зато на YouTube есть весь фильм в восстановленном качестве Full HD.</p>
+    </div>
+    <a class="video" href="https://www.youtube.com/watch?v=yZWNGsFioEg" target="_blank" rel="noopener">
+      <img src="img/kadr-06.jpg" alt="" loading="lazy">
+      <span class="video__play">
+        <i aria-hidden="true"></i>
+        <b>Смотреть фильм целиком</b>
+        <small>Откроется на YouTube · 1 ч 31 мин · Full HD</small>
+      </span>
+    </a>
+    <div class="video-meta">
+      <span>Канал «КиноАрхив [4К]», ремастеринг</span>
+      <a href="https://www.youtube.com/watch?v=2vHOqxhaLdc" target="_blank" rel="noopener">Другая версия на канале «Киносмотрины»</a>
+    </div>
+  </div>
+</section>
+
+<!-- 8. Отзывы -->
+<section class="section" id="otzyvy">
+  <div class="wrap">
+    <div class="section__head">
+      <p class="eyebrow">Отзывы</p>
+      <h2 class="section__title">Что говорят <em>зрители</em></h2>
+      <p class="section__intro">Мнения о фильме разделились. Одни считают его классикой советских приключений, другие сравнивают с «Пиратами XX века» не в его пользу.</p>
+    </div>
+    <div class="reviews">
+      <div class="score">
+        <p class="score__num">7,5<small>/10</small></p>
+        <p>Оценка зрителей на сайте Кино-Театр.Ру, 72 голоса.</p>
+        <p>30,1 миллиона билетов в 1986 году. Пятое место в советском прокате.</p>
+      </div>
+      <div class="quotes" id="quotes">
+        <figure class="quote quote--critic">
+          <blockquote>«Размах съёмок, звёздный состав и интрига оказались недостаточными для повторения успеха „Пиратов XX века“, хотя провальным фильм назвать никак нельзя».</blockquote>
+          <figcaption><span class="tag tag--mid">Рецензия</span><b>picturehistory</b><span>ЖЖ, история кино</span></figcaption>
+        </figure>
+        <figure class="quote">
+          <blockquote>«Прекрасный фильм. Один из лучших советских фильмов приключенческого жанра».</blockquote>
+          <figcaption><span class="tag tag--plus">Нравится</span><b>Руслан Горштейн, Москва</b><span>20.04.2024 · Кино-Театр.Ру</span></figcaption>
+        </figure>
+        <figure class="quote">
+          <blockquote>«Всего две фишки в этом фильме понравились. Это яхта на автопилоте. Второе — это финт от Абдулова в конце. Так подумалось, какая Вонг из Мирошниченко? А потом, можно допустить, что Вонг она по мужу: все ищут азиатку, а она европейка. А? Вот это поворот».</blockquote>
+          <figcaption><span class="tag tag--mid">Смешанно</span><b>Балтиец</b><span>01.02.2024 · Кино-Театр.Ру</span></figcaption>
+        </figure>
+        <figure class="quote">
+          <blockquote>«Хотели повторить успех „Пиратов 20 века“. Не получилось. Хотя в основе фильма реальный случай, была такая мадам-пират. Мирошниченко сыграла хорошо».</blockquote>
+          <figcaption><span class="tag tag--minus">Не впечатлил</span><b>nord</b><span>16.12.2024 · Кино-Театр.Ру</span></figcaption>
+        </figure>
+        <figure class="quote">
+          <blockquote>«Смотрю раз десятый, наверное. Любуюсь, конечно, на всех актёров. Добрая память ушедшим актёрам, долгой жизни ныне живущим».</blockquote>
+          <figcaption><span class="tag tag--plus">Нравится</span><b>Страничка</b><span>17.03.2025 · Кино-Театр.Ру</span></figcaption>
+        </figure>
+        <figure class="quote">
+          <blockquote>«Фильм хороший, но послабее, чем „Пираты XX века“. Тайны мадам Вонг — хороший фильм, но немного грустный».</blockquote>
+          <figcaption><span class="tag tag--mid">Смешанно</span><b>Руслан Горштейн, Москва</b><span>10.05.2024 · Кино-Театр.Ру</span></figcaption>
+        </figure>
+
+        <form class="form" id="review-form">
+          <h3>Оставить отзыв</h3>
+          <div class="form__row">
+            <label for="rv-name">Ваше имя<input id="rv-name" name="name" required maxlength="40" placeholder="Например, Дарья"></label>
+            <label for="rv-mood">Впечатление
+              <select id="rv-mood" name="mood">
+                <option value="plus">Нравится</option>
+                <option value="mid">Смешанно</option>
+                <option value="minus">Не впечатлил</option>
+              </select>
+            </label>
+          </div>
+          <label for="rv-text">Отзыв<textarea id="rv-text" name="text" required maxlength="600" placeholder="Что запомнилось в фильме?"></textarea></label>
+          <div class="actions"><button class="btn" type="submit">Опубликовать отзыв</button></div>
+          <p class="form__status" id="rv-status" role="status"></p>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer class="footer">
+  <div class="wrap">
+    <p>Сайт-обзор фильма «Тайны мадам Вонг» (СССР, 1986). Кадры и фотографии принадлежат их правообладателям и использованы в учебных целях.</p>
+    <ul>
+      <li><a href="https://ru.wikipedia.org/wiki/Тайны_мадам_Вонг" target="_blank" rel="noopener">Википедия</a></li>
+      <li><a href="https://stuki-druki.com/film/tayni-madam-vong.php" target="_blank" rel="noopener">Стуки-Друки</a></li>
+      <li><a href="https://www.kino-teatr.ru/kino/movie/sov/7001/forum/" target="_blank" rel="noopener">Кино-Театр.Ру</a></li>
+      <li><a href="https://picturehistory.livejournal.com/5869755.html" target="_blank" rel="noopener">picturehistory</a></li>
+    </ul>
+  </div>
+</footer>
+
+<script>
+// Галерея: открыть кадр крупно, листать стрелками
+(() => {
+  const btns = [...document.querySelectorAll('#gallery button')];
+  const dlg = document.getElementById('lightbox');
+  const img = document.getElementById('lb-img');
+  const cap = document.getElementById('lb-cap');
+  let i = 0;
+  const show = (n) => {
+    i = (n + btns.length) % btns.length;
+    const src = btns[i].querySelector('img');
+    img.src = src.src; img.alt = src.alt;
+    cap.textContent = `Кадр ${String(i + 1).padStart(2, '0')} из ${btns.length} · ${btns[i].dataset.cap}`;
+  };
+  btns.forEach((b, n) => b.addEventListener('click', () => { show(n); dlg.showModal(); }));
+  document.getElementById('lb-prev').onclick = () => show(i - 1);
+  document.getElementById('lb-next').onclick = () => show(i + 1);
+  document.getElementById('lb-close').onclick = () => dlg.close();
+  dlg.addEventListener('click', (e) => { if (e.target === dlg) dlg.close(); });
+  dlg.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowLeft') show(i - 1);
+    if (e.key === 'ArrowRight') show(i + 1);
+  });
+})();
+
+// Отзывы: сохраняются в этом браузере
+(() => {
+  const KEY = 'madam-vong-reviews';
+  const form = document.getElementById('review-form');
+  const status = document.getElementById('rv-status');
+  const labels = { plus: 'Нравится', mid: 'Смешанно', minus: 'Не впечатлил' };
+  const load = () => { try { return JSON.parse(localStorage.getItem(KEY)) || []; } catch { return []; } };
+  const save = (list) => { try { localStorage.setItem(KEY, JSON.stringify(list)); return true; } catch { return false; } };
+  const render = (r) => {
+    const fig = document.createElement('figure');
+    fig.className = 'quote';
+    const q = document.createElement('blockquote');
+    q.textContent = `«${r.text}»`;
+    const c = document.createElement('figcaption');
+    const tag = document.createElement('span');
+    tag.className = `tag tag--${r.mood}`; tag.textContent = labels[r.mood] || labels.mid;
+    const who = document.createElement('b'); who.textContent = r.name;
+    const when = document.createElement('span'); when.textContent = `${r.date} · отзыв с этого сайта`;
+    c.append(tag, who, when); fig.append(q, c);
+    form.before(fig);
+  };
+  load().forEach(render);
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const d = new FormData(form);
+    const r = {
+      name: d.get('name').trim(), text: d.get('text').trim(), mood: d.get('mood'),
+      date: new Date().toLocaleDateString('ru-RU'),
+    };
+    if (!r.name || !r.text) { status.textContent = 'Заполните имя и текст отзыва.'; return; }
+    render(r);
+    const list = load(); list.push(r);
+    status.textContent = save(list) ? 'Отзыв опубликован.' : 'Отзыв показан, но браузер не дал его сохранить.';
+    form.reset();
+  });
+})();
+</script>
+</body>
+</html>
