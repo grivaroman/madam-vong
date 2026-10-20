@@ -1,0 +1,560 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Шаблон обзора фильма</title>
+<style>
+/* Раскладка: киноафиша 1986 года. Тёмный зал, плакатный жёлтый заголовок,
+   красные плашки, кадры на плёнке. Одна тёмная тема — осознанно. */
+@font-face { font-family: "Rostov"; src: url("fonts/rostov.ttf") format("truetype"); font-display: swap; }
+@font-face { font-family: "Zeger"; src: url("fonts/zeger.ttf") format("truetype"); font-display: swap; }
+@font-face { font-family: "Erzieherisch"; src: url("fonts/erzieherisch.ttf") format("truetype"); font-display: swap; }
+
+:root {
+  --ink: #0c1726;        /* ночное море, фон */
+  --panel: #13223a;      /* карточки и полосы */
+  --line: #24395a;       /* тонкие линии */
+  --paper: #efe7d6;      /* основной текст */
+  --muted: #a3b2c6;      /* второстепенный текст */
+  --gold: #f2c230;       /* жёлтый с афиши */
+  --red: #d9432c;        /* красный с афиши */
+  --title: "Rostov", "Arial Black", "Segoe UI", sans-serif;     /* название и заголовки разделов */
+  --display: "Zeger", "Century Gothic", "Segoe UI", sans-serif;  /* подзаголовки, имена, меню */
+  --body: "Erzieherisch", "Segoe UI", system-ui, sans-serif;     /* основной текст */
+  --mono: var(--display);                                       /* мелкие подписи */
+  --gutter: clamp(16px, 4vw, 48px);
+  --wrap: 1140px;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; scroll-padding-top: 64px; }
+body {
+  margin: 0;
+  background: var(--ink);
+  color: var(--paper);
+  font: 400 19px/1.7 var(--body);
+  -webkit-font-smoothing: antialiased;
+  font-synthesis: none; /* у шрифтов одно начертание, без поддельного жирного */
+}
+img { max-width: 100%; height: auto; display: block; }
+a { color: var(--gold); }
+:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; }
+h1, h2, h3 { font-family: var(--display); text-wrap: balance; margin: 0; line-height: 1.05; }
+p { margin: 0; }
+
+.wrap { max-width: var(--wrap); margin-inline: auto; padding-inline: var(--gutter); }
+.eyebrow {
+  font: 500 13px/1.4 var(--mono);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+
+/* ——— Навигация ——— */
+.nav {
+  position: sticky;
+  top: env(safe-area-inset-top, 0px);
+  z-index: 10;
+  background: color-mix(in srgb, var(--ink) 88%, transparent);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--line);
+}
+.nav .wrap { display: flex; align-items: center; gap: 24px; height: 56px; }
+.nav__logo {
+  font: 700 18px/1 var(--display);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--gold);
+  text-decoration: none;
+  white-space: nowrap;
+}
+.nav__links {
+  display: flex; gap: 20px;
+  overflow-x: auto; scrollbar-width: none;
+  margin-left: auto; min-width: 0;
+}
+.nav__links::-webkit-scrollbar { display: none; }
+.nav__links a {
+  font: 500 13px/1 var(--mono);
+  letter-spacing: 0.06em;
+  color: var(--muted);
+  text-decoration: none;
+  white-space: nowrap;
+  padding-block: 8px;
+}
+.nav__links a:hover { color: var(--paper); }
+
+/* ——— 1. Шапка ——— */
+.hero {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  padding-block: clamp(96px, 14vw, 180px) clamp(56px, 8vw, 96px);
+}
+.hero__bg {
+  position: absolute; inset: 0; z-index: -2;
+  width: 100%; height: 100%;
+  object-fit: cover; object-position: 50% 25%;
+  animation: drift 24s ease-in-out infinite alternate;
+}
+.hero::before {
+  content: ""; position: absolute; inset: 0; z-index: -1;
+  background:
+    linear-gradient(90deg, var(--ink) 8%, color-mix(in srgb, var(--ink) 70%, transparent) 50%, color-mix(in srgb, var(--ink) 20%, transparent)),
+    linear-gradient(0deg, var(--ink) 0%, transparent 45%);
+}
+@media (min-width: 861px) { .hero__bg { left: auto; width: 66%; -webkit-mask-image: linear-gradient(90deg, transparent, #000 30%); mask-image: linear-gradient(90deg, transparent, #000 30%); } }
+@keyframes drift { from { transform: scale(1.04); } to { transform: scale(1.12) translateX(-2%); } }
+.hero__inner { display: grid; gap: 24px; max-width: 720px; }
+.hero__title {
+  font-family: var(--title);
+  font-size: clamp(56px, 11vw, 132px);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: -0.01em;
+  line-height: 0.92;
+  color: var(--gold);
+  text-shadow: 0.045em 0.035em 0 var(--red);
+}
+.hero__lead { font-size: clamp(18px, 2.1vw, 21px); max-width: 34em; color: var(--paper); }
+
+/* ——— Секции ——— */
+.section { padding-block: clamp(64px, 9vw, 112px); border-top: 1px solid var(--line); }
+.section__head { display: grid; gap: 12px; margin-bottom: clamp(32px, 5vw, 56px); max-width: 760px; }
+.section__title {
+  font-family: var(--title);
+  font-size: clamp(36px, 6vw, 64px);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.005em;
+}
+.section__title em { font-style: normal; color: var(--gold); }
+.section__intro { color: var(--muted); font-size: 18px; max-width: 40em; }
+
+/* ——— 2. Сюжет ——— */
+.about { display: grid; grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr); gap: clamp(32px, 6vw, 80px); align-items: start; }
+.prose { display: grid; gap: 20px; max-width: 62ch; }
+.prose h3 { font-size: 24px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.04em; color: var(--gold); margin-top: 16px; }
+.prose p:not(.ph-text):first-of-type::first-letter {
+  float: left; font: 700 4.1em/0.82 var(--display); color: var(--red);
+  margin: 0.06em 0.1em 0 0;
+}
+.poster { display: grid; gap: 20px; position: sticky; top: 88px; }
+.poster img { width: 100%; box-shadow: 14px 14px 0 var(--red); }
+.credits { display: grid; gap: 0; margin: 0; }
+.credits div { display: grid; grid-template-columns: 9em 1fr; gap: 12px; padding-block: 9px; border-bottom: 1px solid var(--line); }
+.credits dt { font: 400 12px/1.6 var(--mono); color: var(--muted); letter-spacing: 0.04em; text-transform: uppercase; }
+.credits dd { margin: 0; font-size: 17px; font-variant-numeric: tabular-nums; }
+
+/* ——— Полупрозрачное фото фоном раздела ——— */
+.has-bg { position: relative; isolation: isolate; overflow: hidden; }
+.section__bg { position: absolute; inset: 0; z-index: -2; width: 100%; height: 100%; object-fit: cover; opacity: .26; filter: saturate(.85); }
+.has-bg::before {
+  content: ""; position: absolute; inset: 0; z-index: -1;
+  background: linear-gradient(var(--ink), transparent 22%, transparent 70%, var(--ink));
+}
+.section__head--center { margin-inline: auto; text-align: center; justify-items: center; }
+
+/* ——— 3. Кадры: карусель-киноплёнка ——— */
+.carousel { --w: min(58vw, 800px); --ease: cubic-bezier(.2, .7, .2, 1); outline: none; }
+.carousel__stage {
+  position: relative; height: calc(var(--w) * .625 + 52px);
+  perspective: 1600px; overflow: hidden; touch-action: pan-y;
+}
+/* огромный контурный номер кадра на углу плёнки */
+.carousel__num {
+  position: absolute; z-index: 4; pointer-events: none;
+  left: calc(50% - var(--w) / 2); bottom: -0.12em; transform: translateX(-38%);
+  font: 400 clamp(96px, 15vw, 220px)/1 var(--title);
+  color: transparent; -webkit-text-stroke: 2px var(--gold);
+  text-shadow: 0.04em 0.04em 0 color-mix(in srgb, var(--red) 70%, transparent);
+  font-variant-numeric: tabular-nums;
+}
+.carousel__num.is-enter { animation: num-in .9s var(--ease); }
+@keyframes num-in { from { opacity: 0; transform: translate(-38%, 30%); } }
+
+.slide {
+  position: absolute; top: 12px; left: 50%; width: var(--w); margin: 0;
+  padding: 24px 0 26px; cursor: pointer;
+  /* кадр на плёнке: перфорация сверху, надпись на краю снизу */
+  background:
+    repeating-linear-gradient(90deg, transparent 0 12px, color-mix(in srgb, var(--paper) 22%, transparent) 12px 26px, transparent 26px 38px) left 0 top 6px / 100% 11px no-repeat,
+    #04080f;
+  transform-style: preserve-3d;
+  transition: transform .9s var(--ease), opacity .9s var(--ease), filter .9s var(--ease);
+}
+.slide::after {
+  content: "СВЕМА  ▸  " attr(data-n) "А      ТАЙНЫ МАДАМ ВОНГ  ·  1986";
+  position: absolute; left: 14px; bottom: 6px; white-space: pre;
+  font: 400 11px/1 var(--display); letter-spacing: .14em; color: var(--gold); opacity: .8;
+}
+.slide img, .slide > .ph { width: 100%; aspect-ratio: 16 / 10; object-fit: cover; }
+.slide[data-off="0"] { transform: translateX(-50%); z-index: 3; cursor: default; box-shadow: 0 40px 80px -30px #000; }
+.slide[data-off="1"]  { transform: translateX(calc(-50% + 76%)) translateZ(-280px) rotateY(-38deg); z-index: 2; opacity: .8; filter: brightness(.42) saturate(.4); }
+.slide[data-off="-1"] { transform: translateX(calc(-50% - 76%)) translateZ(-280px) rotateY(38deg);  z-index: 2; opacity: .8; filter: brightness(.42) saturate(.4); }
+.slide[data-off="2"]  { transform: translateX(calc(-50% + 140%)) translateZ(-600px) rotateY(-55deg); z-index: 1; opacity: 0; pointer-events: none; }
+.slide[data-off="-2"] { transform: translateX(calc(-50% - 140%)) translateZ(-600px) rotateY(55deg);  z-index: 1; opacity: 0; pointer-events: none; }
+.slide[data-off="1"]:hover, .slide[data-off="-1"]:hover { filter: brightness(.7) saturate(.7); }
+/* переход: шторка проектора раскрывается из середины со вспышкой */
+.slide.is-enter img, .slide.is-enter > .ph { animation: shutter 1s var(--ease); }
+@keyframes shutter {
+  0%   { clip-path: inset(0 50% 0 50%); filter: brightness(2.4) contrast(.6); }
+  45%  { clip-path: inset(0 0 0 0);     filter: brightness(1.5) contrast(.9); }
+  100% { clip-path: inset(0 0 0 0);     filter: none; }
+}
+
+.carousel__arrow {
+  position: absolute; top: 50%; z-index: 4; width: 54px; height: 54px; border-radius: 50%;
+  display: grid; place-items: center; cursor: pointer;
+  font: 400 34px/1 var(--display); color: var(--gold);
+  background: color-mix(in srgb, var(--ink) 80%, transparent); border: 1px solid var(--gold);
+  transition: background .2s, color .2s, transform .2s;
+}
+.carousel__prev { left: calc(50% - var(--w) / 2); transform: translate(-50%, -50%); }
+.carousel__next { left: calc(50% + var(--w) / 2); transform: translate(-50%, -50%); }
+.carousel__arrow:hover { background: var(--gold); color: var(--ink); }
+.carousel__arrow:focus-visible, .carousel:focus-visible .slide[data-off="0"] { outline: 2px solid var(--gold); outline-offset: 3px; }
+
+.carousel__cap { text-align: center; margin: 22px auto 0; padding-inline: var(--gutter); max-width: 60ch; color: var(--muted); font-size: 17px; min-height: 1.7em; }
+.carousel__cap b { font: 400 15px/1 var(--display); color: var(--gold); letter-spacing: .12em; margin-right: 10px; }
+.carousel__dots { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-top: 20px; padding-inline: var(--gutter); }
+.carousel__dots button {
+  width: 38px; height: 38px; border-radius: 50%; cursor: pointer;
+  font: 400 14px/1 var(--display); color: var(--muted);
+  background: transparent; border: 1px solid var(--line);
+  transition: background .3s, color .3s, border-color .3s, transform .3s var(--ease);
+}
+.carousel__dots button:hover { border-color: var(--gold); color: var(--gold); }
+.carousel__dots button[aria-current] { background: var(--gold); border-color: var(--gold); color: var(--ink); transform: scale(1.12); }
+
+/* ——— 4. Актёры ——— */
+.cast { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: clamp(12px, 2.4vw, 28px); padding: 0; margin: 0; list-style: none; }
+.actor { display: grid; gap: 12px; align-content: start; }
+.actor__photo { aspect-ratio: 4 / 5; overflow: hidden; background: var(--panel); position: relative; }
+.actor__photo img { width: 100%; height: 100%; object-fit: cover; object-position: center 20%; filter: grayscale(.25) contrast(1.05); transition: filter .3s; }
+.actor:hover .actor__photo img { filter: none; }
+.actor__name { font: 500 clamp(17px, 2.2vw, 24px)/1.1 var(--display); text-transform: uppercase; letter-spacing: .02em; }
+.actor__role { font-size: 16px; line-height: 1.45; color: var(--muted); }
+.actor__role b { color: var(--gold); font-weight: 600; }
+
+/* ——— 5. Режиссёр ——— */
+.director { display: grid; grid-template-columns: minmax(0, 340px) minmax(0, 1fr); gap: clamp(28px, 5vw, 72px); align-items: start; }
+.director__photo img { width: 100%; aspect-ratio: 4 / 5; object-fit: cover; object-position: center 20%; box-shadow: -14px 14px 0 var(--gold); }
+.director__body { display: grid; gap: 20px; max-width: 62ch; }
+.director__name { font-family: var(--title); font-size: clamp(40px, 6vw, 72px); font-weight: 700; text-transform: uppercase; }
+.director__years { font: 400 14px/1.4 var(--mono); color: var(--muted); letter-spacing: .04em; }
+.crew { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; margin-top: 8px; }
+.crew__item { display: flex; gap: 14px; align-items: center; background: var(--panel); padding: 14px; }
+.crew__item img { width: 64px; height: 64px; object-fit: cover; border-radius: 50%; flex: none; }
+.crew__item .mono-avatar { width: 64px; height: 64px; border-radius: 50%; flex: none; display: grid; place-items: center; background: var(--line); font: 600 22px/1 var(--display); color: var(--gold); }
+.crew__item b { display: block; font: 500 17px/1.2 var(--display); text-transform: uppercase; }
+.crew__item small { font: 400 12px/1.4 var(--mono); color: var(--muted); }
+
+/* ——— 6. Места съёмок ——— */
+.places { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(14px, 2.4vw, 28px); }
+.place { background: var(--panel); display: grid; grid-template-rows: auto 1fr; }
+.place__img { aspect-ratio: 16 / 10; overflow: hidden; }
+.place__img img { width: 100%; height: 100%; object-fit: cover; }
+.place__body { padding: 20px 22px 24px; display: grid; gap: 10px; align-content: start; }
+.place__where { font: 500 13px/1.4 var(--mono); color: var(--gold); letter-spacing: .1em; text-transform: uppercase; }
+.place h3 { font-size: 26px; font-weight: 500; text-transform: uppercase; }
+.place p { font-size: 17px; color: var(--muted); }
+.note { margin-top: 28px; font-size: 16px; color: var(--muted); max-width: 62ch; padding-left: 18px; border-left: 3px solid var(--red); }
+
+/* ——— 7. Трейлер ——— */
+.video {
+  position: relative; display: block; aspect-ratio: 16 / 9; max-width: 100%;
+  overflow: hidden; background: #000; text-decoration: none; color: var(--paper);
+}
+.video img { width: 100%; height: 100%; object-fit: cover; opacity: .72; transition: opacity .3s, transform .6s; }
+.video:hover img { opacity: .9; transform: scale(1.03); }
+.video__play {
+  position: absolute; inset: 0; display: grid; place-content: center; justify-items: center; gap: 16px; text-align: center; padding: 16px;
+}
+.video__play i {
+  width: clamp(72px, 10vw, 112px); aspect-ratio: 1; border-radius: 50%;
+  background: var(--red); display: grid; place-items: center;
+  box-shadow: 0 0 0 10px color-mix(in srgb, var(--red) 30%, transparent);
+}
+.video__play i::after { content: ""; border-left: 26px solid var(--paper); border-block: 16px solid transparent; margin-left: 7px; }
+.video__play b { font: 600 clamp(20px, 3vw, 32px)/1.1 var(--display); text-transform: uppercase; letter-spacing: .04em; text-shadow: 0 2px 12px #000; }
+.video__play small { font: 400 13px/1.4 var(--mono); color: var(--paper); text-shadow: 0 1px 8px #000; }
+
+/* ——— Подвал ——— */
+.footer { border-top: 1px solid var(--line); padding-block: 40px 56px; color: var(--muted); font-size: 14px; }
+.footer .wrap { display: grid; gap: 14px; }
+.footer ul { margin: 0; padding: 0; list-style: none; display: flex; flex-wrap: wrap; gap: 6px 20px; font: 400 13px/1.5 var(--mono); }
+.footer a { color: var(--muted); }
+.footer a:hover { color: var(--gold); }
+
+/* ——— Макет: заглушки ——— */
+.ph {
+  display: grid; place-items: center; text-align: center; padding: 12px;
+  background: repeating-linear-gradient(135deg, var(--panel) 0 12px, color-mix(in srgb, var(--line) 70%, var(--panel)) 12px 13px);
+  border: 1px dashed var(--line);
+  font: 500 13px/1.4 var(--mono); color: var(--muted); letter-spacing: .1em; text-transform: uppercase;
+  width: 100%; height: 100%;
+}
+.ph-text { color: var(--muted); border: 1px dashed var(--line); padding: 14px 16px; font-size: 15px; }
+
+/* ——— Телефон ——— */
+@media (max-width: 860px) {
+  .about, .director { grid-template-columns: minmax(0, 1fr); }
+  .poster { max-width: 420px; }
+  .director__photo { max-width: 320px; }
+  .places { grid-template-columns: minmax(0, 1fr); }
+  .cast { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .poster { position: static; }
+}
+@media (max-width: 560px) {
+  .carousel { --w: 80vw; }
+  .carousel__num { transform: translateX(-12%); font-size: 84px; }
+  .slide[data-off="1"]  { transform: translateX(calc(-50% + 70%)) translateZ(-300px) rotateY(-45deg); }
+  .slide[data-off="-1"] { transform: translateX(calc(-50% - 70%)) translateZ(-300px) rotateY(45deg); }
+  .slide::after { content: "СВЕМА  ▸  " attr(data-n) "А"; }
+  .carousel__arrow { width: 42px; height: 42px; font-size: 26px; }
+  .carousel__dots button { width: 32px; height: 32px; font-size: 12px; }
+  body { font-size: 17px; }
+  .nav__logo { display: none; }
+  .nav__links { margin-left: 0; }
+  .cast { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .crew { grid-template-columns: minmax(0, 1fr); }
+  .credits div { grid-template-columns: 7.5em 1fr; }
+  .hero::before { background: linear-gradient(0deg, var(--ink) 10%, color-mix(in srgb, var(--ink) 55%, transparent)); }
+}
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}
+</style>
+</head>
+<body>
+<!-- Пустой макет. Замените текст в квадратных скобках и заглушки «ФОТО» на свои картинки:
+     <div class="ph">ФОТО</div>  →  <img src="img/файл.jpg" alt="описание"> -->
+
+<nav class="nav" aria-label="Разделы">
+  <div class="wrap">
+    <a class="nav__logo" href="#top">[Название]</a>
+    <div class="nav__links">
+      <a href="#syuzhet">Сюжет</a>
+      <a href="#kadry">Кадры</a>
+      <a href="#aktery">Актёры</a>
+      <a href="#rezhisser">Режиссёр</a>
+      <a href="#syomki">Съёмки</a>
+      <a href="#video">Видео</a>
+    </div>
+  </div>
+</nav>
+
+<!-- 1. Шапка: коротко о фильме + красивый фон -->
+<header class="hero" id="top" style="background: var(--panel)">
+  <div class="wrap">
+    <div class="hero__inner">
+      <p class="eyebrow">[Студия] · [Год] · [Жанр]</p>
+      <h1 class="hero__title">[Название фильма]</h1>
+      <p class="hero__lead">[Коротко о фильме в 1–2 предложениях. Фон шапки: картинка img/hero.jpg]</p>
+    </div>
+  </div>
+</header>
+
+<main>
+
+<!-- 2. Подробнее про фильм, сюжет -->
+<section class="section" id="syuzhet">
+  <div class="wrap">
+    <div class="section__head">
+      <p class="eyebrow">О фильме</p>
+      <h2 class="section__title">Сюжет и <em>история</em></h2>
+    </div>
+    <div class="about">
+      <div class="prose">
+        <p class="ph-text">[Абзац 1: завязка. Где и когда происходит действие, кто главные герои.]</p>
+        <p class="ph-text">[Абзац 2: главный конфликт.]</p>
+        <p class="ph-text">[Абзац 3: что интересного в героях.]</p>
+        <h3>Как появился фильм</h3>
+        <p class="ph-text">[История создания, интересные факты.]</p>
+      </div>
+      <aside class="poster">
+        <div style="aspect-ratio: 3 / 4"><div class="ph">Постер</div></div>
+        <dl class="credits">
+          <div><dt>Режиссёр</dt><dd>[Имя]</dd></div>
+          <div><dt>Сценарий</dt><dd>[Имя]</dd></div>
+          <div><dt>Оператор</dt><dd>[Имя]</dd></div>
+          <div><dt>Студия</dt><dd>[Студия]</dd></div>
+          <div><dt>Страна</dt><dd>[Страна]</dd></div>
+          <div><dt>Жанр</dt><dd>[Жанр]</dd></div>
+          <div><dt>Время</dt><dd>[00 минут]</dd></div>
+        </dl>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<!-- 3. Кадры из фильма -->
+<section class="section has-bg" id="kadry">
+  <div class="section__bg ph">Фоновое фото (полупрозрачное)</div>
+  <div class="wrap">
+    <div class="section__head section__head--center">
+      <p class="eyebrow">Галерея</p>
+      <h2 class="section__title">Кадры <em>из фильма</em></h2>
+    </div>
+  </div>
+  <div class="carousel" tabindex="0" aria-roledescription="карусель" aria-label="Кадры из фильма">
+    <div class="carousel__stage">
+      <figure class="slide" data-cap="[Подпись к кадру 1]"><div class="ph">Кадр 01</div></figure>
+      <figure class="slide" data-cap="[Подпись к кадру 2]"><div class="ph">Кадр 02</div></figure>
+      <figure class="slide" data-cap="[Подпись к кадру 3]"><div class="ph">Кадр 03</div></figure>
+      <figure class="slide" data-cap="[Подпись к кадру 4]"><div class="ph">Кадр 04</div></figure>
+      <figure class="slide" data-cap="[Подпись к кадру 5]"><div class="ph">Кадр 05</div></figure>
+      <button class="carousel__arrow carousel__prev" type="button" aria-label="Предыдущий кадр">‹</button>
+      <button class="carousel__arrow carousel__next" type="button" aria-label="Следующий кадр">›</button>
+    </div>
+    <p class="carousel__cap" aria-live="polite"></p>
+    <div class="carousel__dots"></div>
+  </div>
+</section>
+
+<!-- 4. Актёры с фото -->
+<section class="section" id="aktery">
+  <div class="wrap">
+    <div class="section__head">
+      <p class="eyebrow">В ролях</p>
+      <h2 class="section__title">Актёры <em>и роли</em></h2>
+    </div>
+    <ul class="cast">
+      <li class="actor"><div class="actor__photo"><div class="ph">Фото актёра</div></div><h3 class="actor__name">[Имя Фамилия]</h3><p class="actor__role"><b>[Роль]</b>, кто этот герой</p></li>
+      <li class="actor"><div class="actor__photo"><div class="ph">Фото актёра</div></div><h3 class="actor__name">[Имя Фамилия]</h3><p class="actor__role"><b>[Роль]</b>, кто этот герой</p></li>
+      <li class="actor"><div class="actor__photo"><div class="ph">Фото актёра</div></div><h3 class="actor__name">[Имя Фамилия]</h3><p class="actor__role"><b>[Роль]</b>, кто этот герой</p></li>
+      <li class="actor"><div class="actor__photo"><div class="ph">Фото актёра</div></div><h3 class="actor__name">[Имя Фамилия]</h3><p class="actor__role"><b>[Роль]</b>, кто этот герой</p></li>
+    </ul>
+  </div>
+</section>
+
+<!-- 5. Кто режиссёр -->
+<section class="section" id="rezhisser">
+  <div class="wrap">
+    <div class="section__head">
+      <p class="eyebrow">За кадром</p>
+      <h2 class="section__title">Кто <em>снял</em> фильм</h2>
+    </div>
+    <div class="director">
+      <div class="director__photo"><div style="aspect-ratio: 3 / 4"><div class="ph">Фото режиссёра</div></div></div>
+      <div class="director__body">
+        <div>
+          <h3 class="director__name">[Имя режиссёра]</h3>
+          <p class="director__years">[Дата рождения — дата смерти, звания]</p>
+        </div>
+        <p class="ph-text">[Коротко о режиссёре: где учился, чем известен.]</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 6. Место съёмок -->
+<section class="section" id="syomki">
+  <div class="wrap">
+    <div class="section__head">
+      <p class="eyebrow">Место съёмок</p>
+      <h2 class="section__title">Где <em>снимали</em></h2>
+      <p class="section__intro">[Одно предложение о том, где происходит действие и где на самом деле снимали.]</p>
+    </div>
+    <div class="places">
+      <article class="place"><div class="place__img"><div class="ph">Фото места</div></div><div class="place__body"><p class="place__where">[Страна · Город]</p><h3>[Что там снимали]</h3><p>[Пара предложений.]</p></div></article>
+      <article class="place"><div class="place__img"><div class="ph">Фото места</div></div><div class="place__body"><p class="place__where">[Страна · Город]</p><h3>[Что там снимали]</h3><p>[Пара предложений.]</p></div></article>
+      <article class="place"><div class="place__img"><div class="ph">Фото места</div></div><div class="place__body"><p class="place__where">[Страна · Город]</p><h3>[Что там снимали]</h3><p>[Пара предложений.]</p></div></article>
+    </div>
+  </div>
+</section>
+
+<!-- 7. Трейлер -->
+<section class="section" id="video">
+  <div class="wrap">
+    <div class="section__head">
+      <p class="eyebrow">Видео</p>
+      <h2 class="section__title">Трейлер <em>и фильм</em></h2>
+    </div>
+    <a class="video" href="#">
+      <div class="ph">Обложка видео</div>
+      <span class="video__play"><i aria-hidden="true"></i><b>Смотреть трейлер</b><small>[Вставьте ссылку на YouTube в href]</small></span>
+    </a>
+  </div>
+</section>
+
+</main>
+
+<footer class="footer">
+  <div class="wrap">
+    <p>[Подвал: о сайте, источники.]</p>
+    <ul><li><a href="index.html">Готовый пример: «Тайны мадам Вонг»</a></li></ul>
+  </div>
+</footer>
+
+<script>
+// Карусель кадров: текущий кадр крупно в центре, соседние выглядывают по бокам.
+// Положение каждого кадра задаётся атрибутом data-off (-2…2), анимацию делает CSS.
+document.querySelectorAll('.carousel').forEach((root) => {
+  const stage = root.querySelector('.carousel__stage');
+  const slides = [...root.querySelectorAll('.slide')];
+  const dots = root.querySelector('.carousel__dots');
+  const cap = root.querySelector('.carousel__cap');
+  const n = slides.length;
+  const pad = (i) => String(i + 1).padStart(2, '0');
+  let cur = 0;
+  const num = document.createElement('span');
+  num.className = 'carousel__num';
+  num.setAttribute('aria-hidden', 'true');
+  stage.prepend(num);
+  slides.forEach((s, i) => { s.dataset.n = pad(i); });
+
+  slides.forEach((_, i) => {
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.textContent = i + 1;
+    b.setAttribute('aria-label', `Кадр ${i + 1}`);
+    b.addEventListener('click', () => go(i));
+    dots.append(b);
+  });
+
+  function go(to) {
+    cur = (to + n) % n;
+    slides.forEach((s, i) => {
+      let off = i - cur;
+      if (off > n / 2) off -= n;      // по кругу: идём к ближайшему соседу
+      if (off < -n / 2) off += n;
+      s.dataset.off = Math.max(-2, Math.min(2, off));
+      s.classList.toggle('is-enter', false);
+    });
+    const active = slides[cur];
+    void active.offsetWidth;          // перезапуск анимации «вспышки»
+    active.classList.add('is-enter');
+    num.textContent = pad(cur);
+    num.classList.remove('is-enter'); void num.offsetWidth; num.classList.add('is-enter');
+    [...dots.children].forEach((d, i) => d.toggleAttribute('aria-current', i === cur));
+    cap.innerHTML = `<b>${pad(cur)} / ${String(n).padStart(2, '0')}</b> ${active.dataset.cap || ''}`;
+  }
+
+  root.querySelector('.carousel__prev').addEventListener('click', () => go(cur - 1));
+  root.querySelector('.carousel__next').addEventListener('click', () => go(cur + 1));
+  slides.forEach((s, i) => s.addEventListener('click', () => { if (i !== cur) go(i); }));
+  root.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowLeft') go(cur - 1);
+    if (e.key === 'ArrowRight') go(cur + 1);
+  });
+
+  // свайп на телефоне
+  let x0 = null;
+  stage.addEventListener('pointerdown', (e) => { x0 = e.clientX; });
+  stage.addEventListener('pointerup', (e) => {
+    if (x0 === null) return;
+    const dx = e.clientX - x0;
+    x0 = null;
+    if (Math.abs(dx) > 40) go(cur + (dx < 0 ? 1 : -1));
+  });
+
+  go(0);
+});
+</script>
+</body>
+</html>

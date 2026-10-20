@@ -230,7 +230,7 @@ p { margin: 0; }
 .carousel__dots button[aria-current] { background: var(--gold); border-color: var(--gold); color: var(--ink); transform: scale(1.12); }
 
 /* ——— 4. Актёры ——— */
-.cast { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(12px, 2.4vw, 28px); padding: 0; margin: 0; list-style: none; }
+.cast { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: clamp(12px, 2.4vw, 28px); padding: 0; margin: 0; list-style: none; }
 .actor { display: grid; gap: 12px; align-content: start; }
 .actor__photo { aspect-ratio: 4 / 5; overflow: hidden; background: var(--panel); position: relative; }
 .actor__photo img { width: 100%; height: 100%; object-fit: cover; object-position: center 20%; filter: grayscale(.25) contrast(1.05); transition: filter .3s; }
@@ -298,11 +298,6 @@ p { margin: 0; }
   width: 100%; height: 100%;
 }
 .ph-text { color: var(--muted); border: 1px dashed var(--line); padding: 14px 16px; font-size: 15px; }
-.badge-maket {
-  position: fixed; right: 12px; bottom: calc(12px + env(safe-area-inset-bottom, 0px)); z-index: 20;
-  font: 600 12px/1 var(--mono); letter-spacing: .12em; text-transform: uppercase;
-  background: var(--red); color: var(--paper); padding: 8px 10px;
-}
 
 /* ——— Телефон ——— */
 @media (max-width: 860px) {
@@ -310,6 +305,7 @@ p { margin: 0; }
   .poster { max-width: 420px; }
   .director__photo { max-width: 320px; }
   .places { grid-template-columns: minmax(0, 1fr); }
+  .cast { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .poster { position: static; }
 }
 @media (max-width: 560px) {
@@ -434,7 +430,7 @@ p { margin: 0; }
     <div class="section__head">
       <p class="eyebrow">В ролях</p>
       <h2 class="section__title">Актёры <em>и роли</em></h2>
-      <p class="section__intro">В фильме снимались актёры со всего Союза: из России, Армении, Литвы, Казахстана, Узбекистана и Киргизии.</p>
+      <p class="section__intro">Главные роли сыграли звёзды советского кино и олимпийский призёр по боксу.</p>
     </div>
     <ul class="cast">
       <li class="actor">
@@ -456,31 +452,6 @@ p { margin: 0; }
         <div class="actor__photo"><img src="img/a-abdulov.jpg" alt="Александр Абдулов" loading="lazy"></div>
         <h3 class="actor__name">Александр Абдулов</h3>
         <p class="actor__role"><b>Доул</b>, пират</p>
-      </li>
-      <li class="actor">
-        <div class="actor__photo"><img src="img/a-kombarova.jpg" alt="Дилором Камбарова" loading="lazy"></div>
-        <h3 class="actor__name">Дилором Камбарова</h3>
-        <p class="actor__role"><b>Тиоти</b>, служанка и телохранитель мадам Вонг</p>
-      </li>
-      <li class="actor">
-        <div class="actor__photo"><img src="img/a-luzhina.jpg" alt="Лариса Лужина" loading="lazy"></div>
-        <h3 class="actor__name">Лариса Лужина</h3>
-        <p class="actor__role"><b>Фрау Шульц</b>, директор круиза</p>
-      </li>
-      <li class="actor">
-        <div class="actor__photo"><img src="img/a-zharikov.jpg" alt="Евгений Жариков" loading="lazy"></div>
-        <h3 class="actor__name">Евгений Жариков</h3>
-        <p class="actor__role"><b>Капитан</b> теплохода «Иван Бунин»</p>
-      </li>
-      <li class="actor">
-        <div class="actor__photo"><img src="img/a-masyulis.jpg" alt="Альгимантас Масюлис" loading="lazy" style="object-position: center 10%"></div>
-        <h3 class="actor__name">Альгимантас Масюлис</h3>
-        <p class="actor__role"><b>Стэн</b>, начальник комиссара Томпсона</p>
-      </li>
-      <li class="actor">
-        <div class="actor__photo"><img src="img/a-gvozdikova.jpg" alt="Наталья Гвоздикова" loading="lazy"></div>
-        <h3 class="actor__name">Наталья Гвоздикова</h3>
-        <p class="actor__role"><b>Бортпроводница</b> теплохода «Иван Бунин»</p>
       </li>
     </ul>
   </div>
