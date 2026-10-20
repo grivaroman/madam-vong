@@ -148,47 +148,86 @@ p { margin: 0; }
 .credits dt { font: 400 12px/1.6 var(--mono); color: var(--muted); letter-spacing: 0.04em; text-transform: uppercase; }
 .credits dd { margin: 0; font-size: 17px; font-variant-numeric: tabular-nums; }
 
-/* ——— 3. Кадры: плёнка ——— */
-.strip {
-  --hole: color-mix(in srgb, var(--ink) 100%, transparent);
-  background: #050a12;
-  padding-block: 34px;
-  position: relative;
+/* ——— Полупрозрачное фото фоном раздела ——— */
+.has-bg { position: relative; isolation: isolate; overflow: hidden; }
+.section__bg { position: absolute; inset: 0; z-index: -2; width: 100%; height: 100%; object-fit: cover; opacity: .26; filter: saturate(.85); }
+.has-bg::before {
+  content: ""; position: absolute; inset: 0; z-index: -1;
+  background: linear-gradient(var(--ink), transparent 22%, transparent 70%, var(--ink));
 }
-.strip::before, .strip::after {
-  content: ""; position: absolute; left: 0; right: 0; height: 14px;
-  background: repeating-linear-gradient(90deg, transparent 0 14px, var(--line) 14px 32px);
-  background-size: 32px 10px; background-repeat: repeat-x; background-position: 0 center;
-  -webkit-mask: linear-gradient(#000 0 0); opacity: .9;
+.section__head--center { margin-inline: auto; text-align: center; justify-items: center; }
+
+/* ——— 3. Кадры: карусель-киноплёнка ——— */
+.carousel { --w: min(58vw, 800px); --ease: cubic-bezier(.2, .7, .2, 1); outline: none; }
+.carousel__stage {
+  position: relative; height: calc(var(--w) * .625 + 52px);
+  perspective: 1600px; overflow: hidden; touch-action: pan-y;
 }
-.strip::before { top: 10px; }
-.strip::after { bottom: 10px; }
-.gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 250px), 1fr)); gap: 10px; padding: 0; margin: 0; list-style: none; }
-.gallery button {
-  all: unset; cursor: zoom-in; display: block; position: relative;
-  aspect-ratio: 4 / 3; overflow: hidden; width: 100%; background: var(--panel);
+/* огромный контурный номер кадра на углу плёнки */
+.carousel__num {
+  position: absolute; z-index: 4; pointer-events: none;
+  left: calc(50% - var(--w) / 2); bottom: -0.12em; transform: translateX(-38%);
+  font: 400 clamp(96px, 15vw, 220px)/1 var(--title);
+  color: transparent; -webkit-text-stroke: 2px var(--gold);
+  text-shadow: 0.04em 0.04em 0 color-mix(in srgb, var(--red) 70%, transparent);
+  font-variant-numeric: tabular-nums;
 }
-.gallery button:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
-.gallery img { width: 100%; height: 100%; object-fit: cover; transition: transform .4s, filter .4s; filter: saturate(.9); }
-.gallery button:hover img { transform: scale(1.05); filter: saturate(1.1); }
-.gallery small {
-  position: absolute; left: 8px; bottom: 8px;
-  font: 500 11px/1 var(--mono); letter-spacing: 0.1em;
-  background: var(--ink); color: var(--gold); padding: 5px 7px;
+.carousel__num.is-enter { animation: num-in .9s var(--ease); }
+@keyframes num-in { from { opacity: 0; transform: translate(-38%, 30%); } }
+
+.slide {
+  position: absolute; top: 12px; left: 50%; width: var(--w); margin: 0;
+  padding: 24px 0 26px; cursor: pointer;
+  /* кадр на плёнке: перфорация сверху, надпись на краю снизу */
+  background:
+    repeating-linear-gradient(90deg, transparent 0 12px, color-mix(in srgb, var(--paper) 22%, transparent) 12px 26px, transparent 26px 38px) left 0 top 6px / 100% 11px no-repeat,
+    #04080f;
+  transform-style: preserve-3d;
+  transition: transform .9s var(--ease), opacity .9s var(--ease), filter .9s var(--ease);
+}
+.slide::after {
+  content: "СВЕМА  ▸  " attr(data-n) "А      ТАЙНЫ МАДАМ ВОНГ  ·  1986";
+  position: absolute; left: 14px; bottom: 6px; white-space: pre;
+  font: 400 11px/1 var(--display); letter-spacing: .14em; color: var(--gold); opacity: .8;
+}
+.slide img, .slide > .ph { width: 100%; aspect-ratio: 16 / 10; object-fit: cover; }
+.slide[data-off="0"] { transform: translateX(-50%); z-index: 3; cursor: default; box-shadow: 0 40px 80px -30px #000; }
+.slide[data-off="1"]  { transform: translateX(calc(-50% + 76%)) translateZ(-280px) rotateY(-38deg); z-index: 2; opacity: .8; filter: brightness(.42) saturate(.4); }
+.slide[data-off="-1"] { transform: translateX(calc(-50% - 76%)) translateZ(-280px) rotateY(38deg);  z-index: 2; opacity: .8; filter: brightness(.42) saturate(.4); }
+.slide[data-off="2"]  { transform: translateX(calc(-50% + 140%)) translateZ(-600px) rotateY(-55deg); z-index: 1; opacity: 0; pointer-events: none; }
+.slide[data-off="-2"] { transform: translateX(calc(-50% - 140%)) translateZ(-600px) rotateY(55deg);  z-index: 1; opacity: 0; pointer-events: none; }
+.slide[data-off="1"]:hover, .slide[data-off="-1"]:hover { filter: brightness(.7) saturate(.7); }
+/* переход: шторка проектора раскрывается из середины со вспышкой */
+.slide.is-enter img, .slide.is-enter > .ph { animation: shutter 1s var(--ease); }
+@keyframes shutter {
+  0%   { clip-path: inset(0 50% 0 50%); filter: brightness(2.4) contrast(.6); }
+  45%  { clip-path: inset(0 0 0 0);     filter: brightness(1.5) contrast(.9); }
+  100% { clip-path: inset(0 0 0 0);     filter: none; }
 }
 
-.lightbox { border: 0; padding: 0; background: transparent; max-width: min(1100px, 94vw); width: 100%; color: var(--paper); }
-.lightbox::backdrop { background: rgb(4 8 14 / .92); }
-.lightbox figure { margin: 0; display: grid; gap: 12px; }
-.lightbox img { width: 100%; max-height: 80vh; object-fit: contain; background: #000; }
-.lightbox__bar { display: flex; align-items: center; gap: 12px; }
-.lightbox__bar figcaption { margin-right: auto; font: 400 13px/1.4 var(--mono); color: var(--muted); }
-.icon-btn {
-  font: 600 14px/1 var(--display); letter-spacing: .06em; text-transform: uppercase;
-  background: var(--panel); color: var(--paper); border: 1px solid var(--line);
-  padding: 10px 14px; cursor: pointer;
+.carousel__arrow {
+  position: absolute; top: 50%; z-index: 4; width: 54px; height: 54px; border-radius: 50%;
+  display: grid; place-items: center; cursor: pointer;
+  font: 400 34px/1 var(--display); color: var(--gold);
+  background: color-mix(in srgb, var(--ink) 80%, transparent); border: 1px solid var(--gold);
+  transition: background .2s, color .2s, transform .2s;
 }
-.icon-btn:hover { border-color: var(--gold); color: var(--gold); }
+.carousel__prev { left: calc(50% - var(--w) / 2); transform: translate(-50%, -50%); }
+.carousel__next { left: calc(50% + var(--w) / 2); transform: translate(-50%, -50%); }
+.carousel__arrow:hover { background: var(--gold); color: var(--ink); }
+.carousel__arrow:focus-visible, .carousel:focus-visible .slide[data-off="0"] { outline: 2px solid var(--gold); outline-offset: 3px; }
+
+.carousel__cap { text-align: center; margin: 22px auto 0; padding-inline: var(--gutter); max-width: 60ch; color: var(--muted); font-size: 17px; min-height: 1.7em; }
+.carousel__cap b { font: 400 15px/1 var(--display); color: var(--gold); letter-spacing: .12em; margin-right: 10px; }
+.carousel__dots { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-top: 20px; padding-inline: var(--gutter); }
+.carousel__dots button {
+  width: 38px; height: 38px; border-radius: 50%; cursor: pointer;
+  font: 400 14px/1 var(--display); color: var(--muted);
+  background: transparent; border: 1px solid var(--line);
+  transition: background .3s, color .3s, border-color .3s, transform .3s var(--ease);
+}
+.carousel__dots button:hover { border-color: var(--gold); color: var(--gold); }
+.carousel__dots button[aria-current] { background: var(--gold); border-color: var(--gold); color: var(--ink); transform: scale(1.12); }
 
 /* ——— 4. Актёры ——— */
 .cast { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(12px, 2.4vw, 28px); padding: 0; margin: 0; list-style: none; }
@@ -274,6 +313,13 @@ p { margin: 0; }
   .poster { position: static; }
 }
 @media (max-width: 560px) {
+  .carousel { --w: 80vw; }
+  .carousel__num { transform: translateX(-12%); font-size: 84px; }
+  .slide[data-off="1"]  { transform: translateX(calc(-50% + 70%)) translateZ(-300px) rotateY(-45deg); }
+  .slide[data-off="-1"] { transform: translateX(calc(-50% - 70%)) translateZ(-300px) rotateY(45deg); }
+  .slide::after { content: "СВЕМА  ▸  " attr(data-n) "А"; }
+  .carousel__arrow { width: 42px; height: 42px; font-size: 26px; }
+  .carousel__dots button { width: 32px; height: 32px; font-size: 12px; }
   body { font-size: 17px; }
   .nav__logo { display: none; }
   .nav__links { margin-left: 0; }
@@ -352,45 +398,35 @@ p { margin: 0; }
 </section>
 
 <!-- 3. Кадры -->
-<section class="section" id="kadry">
+<section class="section has-bg" id="kadry">
+  <img class="section__bg" src="img/bg-hongkong.jpg" alt="">
   <div class="wrap">
-    <div class="section__head">
+    <div class="section__head section__head--center">
       <p class="eyebrow">Галерея</p>
       <h2 class="section__title">Кадры <em>из фильма</em></h2>
-      <p class="section__intro">Нажмите на кадр, чтобы открыть его крупно. Листать можно стрелками на клавиатуре.</p>
     </div>
   </div>
-  <div class="strip">
-    <div class="wrap">
-      <ul class="gallery" id="gallery">
-        <li><button type="button" data-cap="Один из героев фильма"><img src="img/kadr-02.jpg" alt="Мужчина в белом халате" loading="lazy"><small>КАДР 01</small></button></li>
-        <li><button type="button" data-cap="Ирина Мирошниченко — мадам Вонг"><img src="img/kadr-03.jpg" alt="Мадам Вонг" loading="lazy"><small>КАДР 02</small></button></li>
-        <li><button type="button" data-cap="Напряжённый момент в каюте"><img src="img/kadr-05.jpg" alt="Мужчина с поднятыми руками" loading="lazy"><small>КАДР 03</small></button></li>
-        <li><button type="button" data-cap="Армен Джигарханян — комиссар Томпсон"><img src="img/kadr-06.jpg" alt="Комиссар Томпсон с пистолетом" loading="lazy"><small>КАДР 04</small></button></li>
-        <li><button type="button" data-cap="Комиссар Томпсон на острове"><img src="img/kadr-07.jpg" alt="Томпсон и мужчина в тёмных очках у скал" loading="lazy"><small>КАДР 05</small></button></li>
-        <li><button type="button" data-cap="Томпсон и Булат в джунглях"><img src="img/kadr-08.jpg" alt="Томпсон и Булат с рюкзаками в лесу" loading="lazy"><small>КАДР 06</small></button></li>
-        <li><button type="button" data-cap="Чёрно-белый фотокадр из фильма"><img src="img/kadr-09.jpg" alt="Черно-белый кадр" loading="lazy"><small>КАДР 07</small></button></li>
-        <li><button type="button" data-cap="Мадам Вонг"><img src="img/kadr-10.jpg" alt="Мадам Вонг в кресле" loading="lazy"><small>КАДР 08</small></button></li>
-        <li><button type="button" data-cap="Мадам Вонг и её люди"><img src="img/kadr-11.jpg" alt="Мадам Вонг с подручными" loading="lazy"><small>КАДР 09</small></button></li>
-        <li><button type="button" data-cap="Героиня в кимоно и моряк"><img src="img/kadr-12.jpg" alt="Девушка в кимоно и моряк" loading="lazy"><small>КАДР 10</small></button></li>
-        <li><button type="button" data-cap="Мадам Вонг под прицелом"><img src="img/kadr-13.jpg" alt="Мадам Вонг под прицелом пистолета" loading="lazy"><small>КАДР 11</small></button></li>
-        <li><button type="button" data-cap="Мадам Вонг в финале"><img src="img/kadr-14.jpg" alt="Мадам Вонг крупным планом" loading="lazy"><small>КАДР 12</small></button></li>
-      </ul>
+  <div class="carousel" tabindex="0" aria-roledescription="карусель" aria-label="Кадры из фильма">
+    <div class="carousel__stage">
+      <figure class="slide" data-cap="Один из героев фильма"><img src="img/kadr-02.jpg" alt="Мужчина в белом халате"></figure>
+      <figure class="slide" data-cap="Ирина Мирошниченко — мадам Вонг"><img src="img/kadr-03.jpg" alt="Мадам Вонг"></figure>
+      <figure class="slide" data-cap="Напряжённый момент в каюте"><img src="img/kadr-05.jpg" alt="Мужчина с поднятыми руками"></figure>
+      <figure class="slide" data-cap="Армен Джигарханян — комиссар Томпсон"><img src="img/kadr-06.jpg" alt="Комиссар Томпсон с пистолетом"></figure>
+      <figure class="slide" data-cap="Комиссар Томпсон на острове"><img src="img/kadr-07.jpg" alt="Томпсон и мужчина в тёмных очках у скал"></figure>
+      <figure class="slide" data-cap="Томпсон и Булат в джунглях"><img src="img/kadr-08.jpg" alt="Томпсон и Булат с рюкзаками в лесу"></figure>
+      <figure class="slide" data-cap="Чёрно-белый фотокадр из фильма"><img src="img/kadr-09.jpg" alt="Черно-белый кадр"></figure>
+      <figure class="slide" data-cap="Мадам Вонг"><img src="img/kadr-10.jpg" alt="Мадам Вонг в кресле"></figure>
+      <figure class="slide" data-cap="Мадам Вонг и её люди"><img src="img/kadr-11.jpg" alt="Мадам Вонг с подручными"></figure>
+      <figure class="slide" data-cap="Героиня в кимоно и моряк"><img src="img/kadr-12.jpg" alt="Девушка в кимоно и моряк"></figure>
+      <figure class="slide" data-cap="Мадам Вонг под прицелом"><img src="img/kadr-13.jpg" alt="Мадам Вонг под прицелом пистолета"></figure>
+      <figure class="slide" data-cap="Мадам Вонг в финале"><img src="img/kadr-14.jpg" alt="Мадам Вонг крупным планом"></figure>
+      <button class="carousel__arrow carousel__prev" type="button" aria-label="Предыдущий кадр">‹</button>
+      <button class="carousel__arrow carousel__next" type="button" aria-label="Следующий кадр">›</button>
     </div>
+    <p class="carousel__cap" aria-live="polite"></p>
+    <div class="carousel__dots"></div>
   </div>
 </section>
-
-<dialog class="lightbox" id="lightbox" aria-label="Кадр крупно">
-  <figure>
-    <img id="lb-img" src="" alt="">
-    <div class="lightbox__bar">
-      <figcaption id="lb-cap"></figcaption>
-      <button class="icon-btn" type="button" id="lb-prev" aria-label="Предыдущий кадр">←</button>
-      <button class="icon-btn" type="button" id="lb-next" aria-label="Следующий кадр">→</button>
-      <button class="icon-btn" type="button" id="lb-close">Закрыть</button>
-    </div>
-  </figure>
-</dialog>
 
 <!-- 4. Актёры -->
 <section class="section" id="aktery">
@@ -482,7 +518,8 @@ p { margin: 0; }
 </section>
 
 <!-- 6. Место съёмок -->
-<section class="section" id="syomki">
+<section class="section has-bg" id="syomki">
+  <img class="section__bg" src="img/bg-jungle.jpg" alt="">
   <div class="wrap">
     <div class="section__head">
       <p class="eyebrow">Место съёмок</p>
@@ -552,30 +589,69 @@ p { margin: 0; }
 </footer>
 
 <script>
-// Галерея: открыть кадр крупно, листать стрелками
-(() => {
-  const btns = [...document.querySelectorAll('#gallery button')];
-  const dlg = document.getElementById('lightbox');
-  const img = document.getElementById('lb-img');
-  const cap = document.getElementById('lb-cap');
-  let i = 0;
-  const show = (n) => {
-    i = (n + btns.length) % btns.length;
-    const src = btns[i].querySelector('img');
-    img.src = src.src; img.alt = src.alt;
-    cap.textContent = `Кадр ${String(i + 1).padStart(2, '0')} из ${btns.length} · ${btns[i].dataset.cap}`;
-  };
-  btns.forEach((b, n) => b.addEventListener('click', () => { show(n); dlg.showModal(); }));
-  document.getElementById('lb-prev').onclick = () => show(i - 1);
-  document.getElementById('lb-next').onclick = () => show(i + 1);
-  document.getElementById('lb-close').onclick = () => dlg.close();
-  dlg.addEventListener('click', (e) => { if (e.target === dlg) dlg.close(); });
-  dlg.addEventListener('keydown', (e) => {
-    if (e.key === 'ArrowLeft') show(i - 1);
-    if (e.key === 'ArrowRight') show(i + 1);
-  });
-})();
+// Карусель кадров: текущий кадр крупно в центре, соседние выглядывают по бокам.
+// Положение каждого кадра задаётся атрибутом data-off (-2…2), анимацию делает CSS.
+document.querySelectorAll('.carousel').forEach((root) => {
+  const stage = root.querySelector('.carousel__stage');
+  const slides = [...root.querySelectorAll('.slide')];
+  const dots = root.querySelector('.carousel__dots');
+  const cap = root.querySelector('.carousel__cap');
+  const n = slides.length;
+  const pad = (i) => String(i + 1).padStart(2, '0');
+  let cur = 0;
+  const num = document.createElement('span');
+  num.className = 'carousel__num';
+  num.setAttribute('aria-hidden', 'true');
+  stage.prepend(num);
+  slides.forEach((s, i) => { s.dataset.n = pad(i); });
 
+  slides.forEach((_, i) => {
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.textContent = i + 1;
+    b.setAttribute('aria-label', `Кадр ${i + 1}`);
+    b.addEventListener('click', () => go(i));
+    dots.append(b);
+  });
+
+  function go(to) {
+    cur = (to + n) % n;
+    slides.forEach((s, i) => {
+      let off = i - cur;
+      if (off > n / 2) off -= n;      // по кругу: идём к ближайшему соседу
+      if (off < -n / 2) off += n;
+      s.dataset.off = Math.max(-2, Math.min(2, off));
+      s.classList.toggle('is-enter', false);
+    });
+    const active = slides[cur];
+    void active.offsetWidth;          // перезапуск анимации «вспышки»
+    active.classList.add('is-enter');
+    num.textContent = pad(cur);
+    num.classList.remove('is-enter'); void num.offsetWidth; num.classList.add('is-enter');
+    [...dots.children].forEach((d, i) => d.toggleAttribute('aria-current', i === cur));
+    cap.innerHTML = `<b>${pad(cur)} / ${String(n).padStart(2, '0')}</b> ${active.dataset.cap || ''}`;
+  }
+
+  root.querySelector('.carousel__prev').addEventListener('click', () => go(cur - 1));
+  root.querySelector('.carousel__next').addEventListener('click', () => go(cur + 1));
+  slides.forEach((s, i) => s.addEventListener('click', () => { if (i !== cur) go(i); }));
+  root.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowLeft') go(cur - 1);
+    if (e.key === 'ArrowRight') go(cur + 1);
+  });
+
+  // свайп на телефоне
+  let x0 = null;
+  stage.addEventListener('pointerdown', (e) => { x0 = e.clientX; });
+  stage.addEventListener('pointerup', (e) => {
+    if (x0 === null) return;
+    const dx = e.clientX - x0;
+    x0 = null;
+    if (Math.abs(dx) > 40) go(cur + (dx < 0 ? 1 : -1));
+  });
+
+  go(0);
+});
 </script>
 </body>
 </html>
