@@ -141,10 +141,10 @@ p { margin: 0; }
   float: left; font: 700 4.1em/0.82 var(--display); color: var(--red);
   margin: 0.06em 0.1em 0 0;
 }
-.poster { display: grid; gap: 20px; position: sticky; top: 88px; }
+.poster { position: sticky; top: 88px; width: 100%; max-width: 320px; justify-self: end; }
 .poster img { width: 100%; box-shadow: 14px 14px 0 var(--red); }
-.credits { display: grid; gap: 0; margin: 0; }
-.credits div { display: grid; grid-template-columns: 9em 1fr; gap: 12px; padding-block: 9px; border-bottom: 1px solid var(--line); }
+.credits { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); column-gap: 28px; margin: 8px 0 0; border-top: 1px solid var(--line); }
+.credits div { display: grid; gap: 2px; align-content: start; padding-block: 9px; border-bottom: 1px solid var(--line); }
 .credits dt { font: 400 12px/1.6 var(--mono); color: var(--muted); letter-spacing: 0.04em; text-transform: uppercase; }
 .credits dd { margin: 0; font-size: 17px; font-variant-numeric: tabular-nums; }
 
@@ -302,7 +302,7 @@ p { margin: 0; }
 /* ——— Телефон ——— */
 @media (max-width: 860px) {
   .about, .director { grid-template-columns: minmax(0, 1fr); }
-  .poster { max-width: 420px; }
+  .poster { max-width: 420px; justify-self: start; }
   .director__photo { max-width: 320px; }
   .places { grid-template-columns: minmax(0, 1fr); }
   .cast { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -321,7 +321,7 @@ p { margin: 0; }
   .nav__links { margin-left: 0; }
   .cast { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .crew { grid-template-columns: minmax(0, 1fr); }
-  .credits div { grid-template-columns: 7.5em 1fr; }
+  .credits { grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 16px; }
   .hero::before { background: linear-gradient(0deg, var(--ink) 10%, color-mix(in srgb, var(--ink) 55%, transparent)); }
 }
 @media (prefers-reduced-motion: reduce) {
@@ -366,25 +366,25 @@ p { margin: 0; }
   <div class="wrap">
     <div class="section__head">
       <p class="eyebrow">О фильме</p>
-      <h2 class="section__title">Сюжет и <em>история</em></h2>
+      <h2 class="section__title">Сюжет <em>фильма</em></h2>
     </div>
     <div class="about">
       <div class="prose">
         <p class="ph-text">[Абзац 1: завязка. Где и когда происходит действие, кто главные герои.]</p>
         <p class="ph-text">[Абзац 2: главный конфликт.]</p>
         <p class="ph-text">[Абзац 3: что интересного в героях.]</p>
+      
+        <dl class="credits">
+        <div><dt>Режиссёр</dt><dd>[Имя]</dd></div>
+        <div><dt>Сценарий</dt><dd>[Имя]</dd></div>
+        <div><dt>Оператор</dt><dd>[Имя]</dd></div>
+        <div><dt>Студия</dt><dd>[Студия]</dd></div>
+        <div><dt>Жанр</dt><dd>[Жанр]</dd></div>
+        <div><dt>Время</dt><dd>[00 минут]</dd></div>
+        </dl>
       </div>
       <aside class="poster">
         <div style="aspect-ratio: 3 / 4"><div class="ph">Постер</div></div>
-        <dl class="credits">
-          <div><dt>Режиссёр</dt><dd>[Имя]</dd></div>
-          <div><dt>Сценарий</dt><dd>[Имя]</dd></div>
-          <div><dt>Оператор</dt><dd>[Имя]</dd></div>
-          <div><dt>Студия</dt><dd>[Студия]</dd></div>
-          <div><dt>Страна</dt><dd>[Страна]</dd></div>
-          <div><dt>Жанр</dt><dd>[Жанр]</dd></div>
-          <div><dt>Время</dt><dd>[00 минут]</dd></div>
-        </dl>
       </aside>
     </div>
   </div>
